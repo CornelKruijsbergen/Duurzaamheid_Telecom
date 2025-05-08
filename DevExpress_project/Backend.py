@@ -9,26 +9,31 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'  # Naam van de tabel in de database
 
-    id = Column(Integer, primary_key=True)  # Primaire sleutel
-    name = Column(String)  # Kolom voor gebruikersnaam
-    age = Column(Integer)  # Kolom voor leeftijd
+    id = Column(String, primary_key=True)  # Primaire sleutel en tevens onderdeelnaam
+    vermogen = Column(Integer)  #  gVermogen in Watt
+    piekvermogen = Column(Integer)  # Peikvermogen in watt
+    installatiedruk = Column(Integer)  # Installatiedruk in KG CO2
+    Gewicht = Column(Integer)  # Gewicht in KG
+    Capaciteit = Column(Integer)  # Kolom voor Capaciteit in cijfers
+    Levensduur = Column(Integer)  # Levensduur in uren
 
-# Verbind met de database (bijvoorbeeld MySQL)
+
+# Verbind met de database (MySQL)  
 engine = create_engine('82.112.49.16')
 
 # Maak de tabel in de database als deze nog niet bestaat
 Base.metadata.create_all(engine)
 
-# Maak een sessie om met de database te communiceren
+# Sessie om met de database te communiceren
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Voeg een nieuwe gebruiker toe
-new_user = User(name='John Doe', age=30)
+# Voeg een nieuwe onderdeel toe
+new_user = User(id='Onderdeel', vermogen=30, piekvermogen=50, installatiedruk=10, Gewicht=20, Capaciteit=100, Levensduur=2000)
 session.add(new_user)
 session.commit()
 
 # Query de database
 users = session.query(User).all()
 for user in users:
-    print(user.name, user.age)
+    print(user.id, user.vermogen, user.piekvermogen, user.installatiedruk, user.Gewicht, user.Capaciteit, user.Levensduur)
