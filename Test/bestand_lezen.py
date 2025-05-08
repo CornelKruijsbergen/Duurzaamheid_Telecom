@@ -17,7 +17,7 @@ print(data)
 
 x = 5
 d = 0
-a = 7;
+a = 7
 d = a + x 
 
 
