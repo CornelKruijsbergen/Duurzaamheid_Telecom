@@ -1,0 +1,33 @@
+from flask import Flask, jsonify, request
+import pandas as pd
+import csv
+import json
+
+#csv_file = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.csv"
+#json_file = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.json"
+
+
+bestand_pad = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.csv"
+data = pd.read_csv(bestand_pad)
+########################################
+app = Flask(__name__)
+
+
+@app.route('/')
+def home():
+    return "Helloooo, Flask!"
+
+# Endpoint om data op te halen
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    return jsonify({print(data)})
+
+# Endpoint om data te ontvangen
+@app.route('/api/send', methods=['POST'])
+def post_data():
+    received_data = request.json
+    print(f"Data ontvangen: {received_data}")
+    return jsonify({'status': 'success', 'received': received_data})
+
+if __name__ == '__main__':
+    app.run(debug=True)
