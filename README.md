@@ -1,1 +1,1 @@
-Dev_Express is het prodcut, Test is prototype omgeving
+Dev_Express is het product, Test is prototype omgeving
