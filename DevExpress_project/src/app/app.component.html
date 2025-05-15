@@ -175,6 +175,37 @@
       margin-block: 1.5rem;
     }
   }
+
+
+  .tooltip { 
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--gray-900);
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position the tooltip above the text */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+  }
+
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
 </style>
 
 <main class="main">
@@ -261,7 +292,7 @@
       </div>
       <div class="social-links">
         <a
-          href="https://github.com/CornelKruijsbergen/Duurzaamheid"
+          href="ttps://github.com/CornelKruijsbergen/Duurzaamheid_Telecom"
           aria-label="Github"
           target="_blank"
           rel="noopener"
@@ -279,27 +310,9 @@
             />
           </svg>
         </a>
+
         <a
-          href="https://twitter.com/angular"
-          aria-label="Twitter"
-          target="_blank"
-          rel="noopener"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            alt="Twitter"
-          >
-            <path
-              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-            />
-          </svg>
-        </a>
-        <a
-          href="https://www.youtube.com/channel/UCbn1OgGei-DV7aSRo_HaAiw"
+          href="https://www.youtube.com/watch?v=V55t-7zATZM"
           aria-label="Youtube"
           target="_blank"
           rel="noopener"
