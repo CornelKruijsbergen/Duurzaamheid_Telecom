@@ -226,19 +226,17 @@
           <clipPath id="a"><path fill="#fff" d="M0 0h982v239H0z" /></clipPath>
         </defs>
       </svg>
-      <h1>Testtest, {{ title }}</h1>
-      <p>Feest! De app lijkt te werken! 🎉</p>
+      <h1>Welkom bij ESMAE!, {{ title }}</h1>
+      <p>De Electrical Systainability Measure Analyser for Electronics, de tool die duurzaamheid makkelijk maakt! 🎉</p>
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
       <div class="pill-group">
         @for (item of [
-          { title: 'Nieuw bestand', link: 'src/niew_bestand' },
+          { title: 'Nieuw bestand', link: 'nieuw-bestand.component.html' },
           { title: 'Voeg onderdeel toe', link: 'https://angular.dev/tutorials' },
-          { title: 'Bewerk onderdeel', link: 'https://angular.dev/tools/cli' },
-          { title: 'Verwijder onderdeel', link: 'https://angular.dev/tools/language-service' },
-          { title: 'Instellingen/Dev', link: 'https://angular.dev/tools/devtools' },
-          { title: 'Testopstelling', link: 'https://arcadis.com'}
+          { title: 'Beheer login', link: 'https://angular.dev/tools/devtools' },
+          { title: 'Handleiding', link: 'https://arcadis.com'}
         ]; track item.title) {
           <a
             class="pill"
@@ -263,7 +261,7 @@
       </div>
       <div class="social-links">
         <a
-          href="https://github.com/angular/angular"
+          href="https://github.com/CornelKruijsbergen/Duurzaamheid"
           aria-label="Github"
           target="_blank"
           rel="noopener"
