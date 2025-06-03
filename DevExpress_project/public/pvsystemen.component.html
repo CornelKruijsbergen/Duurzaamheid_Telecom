@@ -1,0 +1,30 @@
+
+<p>pvsystemen works!</p>
+
+<div *ngIf="message" class="alert alert-success">
+  {{ message }}
+</div>
+
+<form (ngSubmit)="submitForm()" #pvForm="ngForm">
+  <label>
+    PV (0 als er geen PV is, 1 als er wel PV is):
+    <input type="number" name="PV" [(ngModel)]="PV" required>
+  </label>
+  <br>
+  <label>
+    PV Vermogen:
+    <input type="number" name="pvvermogen" [(ngModel)]="pvvermogen" required>
+  </label>
+  <br>
+  <label>
+    PV Hoek:
+    <input type="number" name="pvhoek" [(ngModel)]="pvhoek" required>
+  </label>
+  <br>
+  <label>
+    PV Aantal:
+    <input type="number" name="pvaantal" [(ngModel)]="pvaantal" required>
+  </label>
+  <br>
+  <button type="submit">Opslaan</button>
+</form>

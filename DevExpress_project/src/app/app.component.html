@@ -265,13 +265,14 @@
       <div class="pill-group">
         @for (item of [
           { title: 'Nieuw bestand', link: 'nieuw-bestand.component.html' },
-          { title: 'Voeg onderdeel toe', link: 'https://angular.dev/tutorials' },
-          { title: 'Beheer login', link: 'https://angular.dev/tools/devtools' },
-          { title: 'Handleiding', link: 'https://arcadis.com'}
+          { title: 'Voeg onderdeel toe', link: 'onderdeel-toevoegen.component.html' },
+          { title: 'Beheer login', link: '/inlogpagina' },
+          { title: 'Handleiding', link: 'handleiding.component.html'}
         ]; track item.title) {
           <a
             class="pill"
-            [href]="item.link"
+        
+            [routerlink]="item.link"
             target="_blank"
             rel="noopener"
           >

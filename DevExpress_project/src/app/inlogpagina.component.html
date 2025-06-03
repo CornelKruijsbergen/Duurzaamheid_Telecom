@@ -1,0 +1,17 @@
+<p>inlogpagina works!</p>
+<p>Inloggen</p>
+<form (ngSubmit)="login()" #loginForm="ngForm">
+  <label>
+    Gebruikersnaam:
+    <input type="text" name="username" [(ngModel)]="username" required>
+  </label>
+  <br>
+  <label>
+    Wachtwoord:
+    <input type="password" name="password" [(ngModel)]="password" required>
+  </label>
+  <br>
+  <button type="submit">Inloggen</button>
+</form>
+<div *ngIf="loginError" style="color:red;">{{ loginError }}</div>
+<div *ngIf="loginSuccess" style="color:green;">Inloggen gelukt!</div>
