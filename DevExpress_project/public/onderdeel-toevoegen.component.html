@@ -1,1 +1,33 @@
-<p>onderdeel-toevoegen works!</p>
+<h2>Nieuw onderdeel toevoegen</h2>
+<form (ngSubmit)="voegOnderdeelToe()" #onderdeelForm="ngForm">
+  <label>
+    Nominaal Vermogen:
+    <input type="number" name="nominaal_vermogen" [(ngModel)]="nominaal_vermogen" required>
+  </label><br>
+  <label>
+    Piekvermogen:
+    <input type="number" name="piek_vermogen" [(ngModel)]="piek_vermogen" required>
+  </label><br>
+  <label>
+    Installatiedruk:
+    <input type="number" name="installatie_druk" [(ngModel)]="installatie_druk" required>
+  </label><br>
+  <label>
+    Gewicht:
+    <input type="number" name="gewicht" [(ngModel)]="gewicht" required>
+  </label><br>
+  <label>
+    Levensduur:
+    <input type="number" name="levensduur" [(ngModel)]="levensduur" required>
+  </label><br>
+  <label>
+    Capaciteit:
+    <input type="number" name="capaciteit" [(ngModel)]="capaciteit" required>
+  </label><br>
+  <label>
+    Categorie:
+    <input type="text" name="categorie" [(ngModel)]="categorie" required>
+  </label><br>
+  <button type="submit">Toevoegen</button>
+</form>
+<div *ngIf="melding">{{ melding }}</div>

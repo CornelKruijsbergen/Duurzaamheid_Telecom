@@ -1,0 +1,97 @@
+(defun c:DB_CCTV_Static ()
+  (princ "\nStarting DB_CCTV_STATIC...\n") ; Debugging: Script start
+
+  ;; Selecteer alle block inserts in de tekening
+  (setq ss (ssget "X" '((0 . "INSERT"))))
+
+  ;; Debugging: Controleer of er een selectieset is gemaakt
+  (princ (strcat "\nSelectieset: " (if ss "Gevonden" "Niet gevonden")))
+  (princ (strcat "\nAantal geselecteerde blocks: " (if ss (itoa (sslength ss)) "Geen blokken")))
+
+  ;; Controleer of er blocks zijn geselecteerd
+  (if ss
+      (progn
+        ;; Initialiseer de teller
+        (setq i 0)
+        (princ (strcat "\nDe waarde van i is: " (itoa i))) ; Debugging: Initialisatie van i
+
+        ;; Itereer over de selectie
+        (while (< i (sslength ss))
+          ;; Verkrijg de entity uit de selectie
+         ;; (setq ent (ssname ss i))
+         ;; (princ (strcat "\nProcessing block #" (itoa i))) ; Debugging: Toon het huidige blocknummer
+        ;;  (princ (strcat "\nEntity gevonden: " (if ent "Ja" "Nee"))) ; Debugging: Controleer of de entity geldig is
+
+          ;; Verkrijg de entity gegevens
+          (setq entData (entget ent))
+
+          ;; Debugging: Toon de volledige entData om te controleren wat er wordt opgehaald
+          (princ (strcat "\nEntity Data: " (vl-prin1-to-string entData)))
+
+          ;; Controleer of entData geldig is
+          (if entData
+              ;; Verkrijg de effectieve blocknaam
+              (let* ((blockName (cdr (assoc 2 entData))) ; Verkrijg de blocknaam (kan anoniem zijn)
+                     (blockDef (tblsearch "BLOCK" blockName)) ; Zoek de definitie in de block table
+                     (effectiveName (if (and blockDef (assoc 2 blockDef)) (cdr (assoc 2 blockDef)) blockName))) ; Gebruik de effectieve naam of de anonieme naam
+
+                ;; Debugging: Controleer of blockDef geldig is
+                (princ (strcat "\nBlockDef Status: " (if blockDef "Gevonden" "Niet gevonden")))
+
+                ;; Debugging: Toon de effectieve blocknaam
+                (princ (strcat "\nEffectieve blocknaam: " (if effectiveName effectiveName "Onbekend")))
+
+                ;; Controleer op visibility parameter
+                (let ((nextEnt (entnext ent)))
+                  (if (and nextEnt (assoc 302 (entget nextEnt)))
+                      (let ((visState (cdr (assoc 302 (entget nextEnt)))))
+                        (princ (strcat "\nVisibility State: " (if visState visState "nil"))) ; Debugging: Visibility state
+
+                        ;; Wijs een attribuutwaarde toe op basis van de visibility state
+                        (setq partName
+                              (cond
+                                ((= effectiveName "Test_DB_CCTV_Static") ; Gebruik de effectieve naam
+                                 (cond
+                                   ((= visState "Option0") "Niks gekozen")
+                                   ((= visState "Option1") "CCTVCameraEyeonYouHD")
+                                   ((= visState "Option2") "CCTVCameraAutoDomevastHD")
+                                   (t "Unknown CCTV")))
+                                (t nil))) ; Fallback voor onbekende blocks
+
+                        ;; Debugging: Toon de toegewezen waarde
+                        (princ (strcat "\nAssigned Value: " (if partName partName "nil")))
+
+                        ;; Controleer of het attribuut bestaat in het block
+                        (let ((attrib (assoc 1 (entget nextEnt)))) ; Controleer attribuut
+                          (if attrib
+                              (progn
+                                (princ (strcat "\nAttribuut PART_NAME_CCTV_STATIC gevonden in block: " effectiveName)) ; Debugging: Attribute found
+
+                                ;; Pas het attribuut aan als partName geldig is
+                                (if partName
+                                    (progn
+                                      (princ (strcat "\nUpdating PART_NAME_CCTV_STATIC with value: " partName)) ; Debugging: Update attribuut
+                                      (command "_attedit" "_Y" "" "" "" ent "PART_NAME_CCTV_STATIC" partName "")
+                                    )
+                                  (princ (strcat "\nNo valid PART_NAME_CCTV_STATIC for block: " effectiveName " | Visibility State: " (if visState visState "nil"))))
+                              )
+                            (princ (strcat "\nAttribuut PART_NAME_CCTV_STATIC niet gevonden in block: " effectiveName))) ; Debugging: Attribute not found
+                      )
+                    (princ (strcat "\nBlock " effectiveName " has no visibility parameter and will be ignored."))) ; Geen visibility parameter
+                )
+            )
+            (princ "\nError: Entity data is nil.\n") ; Debugging: Entity data is nil
+          )
+
+          ;; Verhoog de teller voor de volgende entity
+          (setq i (1+ i))
+          )
+      )
+    ;; Debugging: Geen blocks gevonden
+    (princ "\nError: Geen blocks gevonden in de tekening.\n")
+    )
+
+  ;; Debugging: Einde van het script
+  (princ "\nEinde van DB_CCTV_STATIC.\n")
+  (princ)
+)

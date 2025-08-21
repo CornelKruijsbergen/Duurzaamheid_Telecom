@@ -3,11 +3,9 @@ import pandas as pd
 import csv
 import json
 
-#csv_file = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.csv"
-#json_file = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.json"
-
 
 bestand_pad = r"C:\Users\kruijsbc1820\OneDrive - ARCADIS\Bureaublad\sample.csv"
+#bestand_pad = r"Local_upload; CSV"
 data = pd.read_csv(bestand_pad)
 ########################################
 app = Flask(__name__)
@@ -15,7 +13,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Helloooo, Flask!"
+    return "Debug Console, het werkt"
 
 # Endpoint om data op te halen
 @app.route('/api/data', methods=['GET'])
