@@ -1,20 +1,58 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import pandas as pd
+import csv
+import json
+from datetime import datetime
 
-# Variabelen voor de PV-module
+# Variabelen voor de PV-module of CO2 berekening
 PV = 0
 pvvermogen = 0
 pvhoek = 0
 pvaantal = 0
+PVuitkomst = 0
+inbedrijfstijd = 0
+SomtotaalCO2 = 0
+Nominaalenergie = 0
+Piekvermogen = 0
+Energieopwek = 0
+Levensduurproject = 0
+Levensduuronderdeel = 0
+PPL = 0.018
+Capaciteit = 0
+
+# =====================================Flask Setup========================================
+
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TeamTelecom2025!@localhost:3306/onderdelendb'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+@app.route('/')
+def home():
+    return "Debug Console, het werkt"
+
+# Endpoint om data op te halen
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    return jsonify({print(data)})
+
+# Endpoint om data te ontvangen
+@app.route('/api/send', methods=['POST'])
+def post_data():
+    received_data = request.json
+    print(f"Data ontvangen: {received_data}")
+    return jsonify({'status': 'success', 'received': received_data})
 
 
 
-
+    # ====================================File Upload========================================
 
 # Zet het pad naar de public map
 static_dir = os.path.join(os.path.dirname(__file__), 'public') 
-app = Flask(__name__, static_folder=static_dir, static_url_path='')
+#app = Flask(__name__, static_folder=static_dir, static_url_path='')
 
 # Stel een map in waar bestanden lokaal worden opgeslagen
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'uploads')
@@ -39,8 +77,8 @@ def upload_file():
     if not file.filename.endswith('.csv'):
         return 'Alleen CSV-bestanden zijn toegestaan', 400
 
-    # Sla het bestand lokaal op
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    # Sla het bestand altijd op als 'catdatabase.csv'
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'catdatabase.csv')
     file.save(filepath)
 
     return f'Bestand opgeslagen als: {filepath}', 200
@@ -54,46 +92,108 @@ def serve_angular(path):
         # Fallback naar index.html voor Angular routing
         return send_from_directory(static_dir, 'index.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 
-#====================================PV-systemen========================================
-@app.route('/set_pv', methods=['POST'])
-def set_pv():
-    global PV, pvvermogen, pvhoek, pvaantal
-    data = request.get_json()
-    PV = data.get('PV', 0)
-    pvvermogen = data.get('pvvermogen', 0)
-    pvhoek = data.get('pvhoek', 0)
-    pvaantal = data.get('pvaantal', 0)
-    return jsonify({'message': 'Waarden succesvol opgeslagen!'})
+    #=============================CSV Verwerken========================================
 
-@app.route('/get_pv', methods=['GET'])
-def get_pv():
+
+@app.route('/catdata', methods=['GET'])
+def get_catdata():
+    # Initialiseer optel-variabelen
+    piek_vermogen = 0
+    nominaal_vermogen = 0
+    gewicht = 0
+    capaciteit = 0
+    levensduur = 0
+
+    with open('catdatabase.csv', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if not row:
+                continue
+            onderdeel_naam = row[0]
+            # Ondedeel opzoeken in de database
+            onderdeel = Onderdeel.query.filter_by(OnderdeelID=onderdeel_naam).first()
+            if onderdeel:
+               #Telt hier alles op voor de forumele straks
+                piek_vermogen += onderdeel.Piek_Vermogen
+                nominaal_vermogen += onderdeel.Nominaal_Vermogen
+                gewicht += onderdeel.Gewicht
+                capaciteit += onderdeel.Capaciteit
+                levensduur += onderdeel.Levensduur
+
+    # debug
+    print("DEBUG /catdata resultaat:", piek_vermogen, nominaal_vermogen, gewicht, capaciteit, levensduur)
     return jsonify({
-        'PV': PV,
-        'pvvermogen': pvvermogen,
-        'pvhoek': pvhoek,
-        'pvaantal': pvaantal
-    })
+    "piek_vermogen": piek_vermogen,
+    "nominaal_vermogen": nominaal_vermogen,
+    "gewicht": gewicht,
+    "capaciteit": capaciteit,
+    "levensduur": levensduur
+})
+
+
+#====================================Onderdelen_toevoegen========================================
+
+class Onderdeel(db.Model):
+    __tablename__ = 'catdatabase_data'
+    OnderdeelID = db.Column(db.String(255), primary_key=True)
+    Nominaal_Vermogen = db.Column(db.Float, nullable=False)
+    Piek_Vermogen = db.Column(db.Integer, nullable=False)
+    Gewicht = db.Column(db.Float, nullable=False)
+    Levensduur = db.Column(db.Integer, nullable=False)
+    Capaciteit = db.Column(db.Integer, nullable=False)
+    Categorie = db.Column(db.String(30), nullable=False)
+
+@app.route('/onderdeel_toevoegen', methods=['POST'])
+def onderdeel_toevoegen():
+    data = request.get_json()
+    print("DEBUG: Ontvangen data:", data)
+
+    try:
+        nieuw_onderdeel = Onderdeel(
+            OnderdeelID=data.get('OnderdeelID'),
+            Nominaal_Vermogen=data.get('Nominaal_Vermogen'),
+            Piek_Vermogen=data.get('Piek_Vermogen'),
+            Gewicht=data.get('Gewicht'),
+            Levensduur=data.get('Levensduur'),
+            Capaciteit=data.get('Capaciteit'),
+            Categorie=data.get('Categorie')
+        )
+        print("DEBUG: Nieuw onderdeel object aangemaakt:")
+        print(f"  OnderdeelID: {nieuw_onderdeel.OnderdeelID}")
+        print(f"  Nominaal_Vermogen: {nieuw_onderdeel.Nominaal_Vermogen}")
+        print(f"  Piek_Vermogen: {nieuw_onderdeel.Piek_Vermogen}")
+        print(f"  Gewicht: {nieuw_onderdeel.Gewicht}")
+        print(f"  Levensduur: {nieuw_onderdeel.Levensduur}")
+        print(f"  Capaciteit: {nieuw_onderdeel.Capaciteit}")
+        print(f"  Categorie: {nieuw_onderdeel.Categorie}")
+
+        db.session.add(nieuw_onderdeel)
+        db.session.commit()
+        print('Onderdeel succesvol toegevoegd!')
+        response = {"success": True, "message": "Onderdeel succesvol toegevoegd!"}
+        print("RESPONSE:", response)
+        return jsonify(response), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f'Fout bij toevoegen onderdeel: {e}')
+        response = {"success": False, "message": f"Fout bij toevoegen onderdeel: {e}"}
+        print("RESPONSE:", response)
+        return jsonify(response), 500
+
 
 
 #====================================Inlog========================================
-from flask_sqlalchemy import SQLAlchemy
 
-# Voeg deze regels toe na je Flask app-instantie:
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TeamTelecom2025!@localhost:3306/onderdelendb'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-# Definieer het model voor de inlogscherm-tabel:
+
 class Inlogscherm(db.Model):
     __tablename__ = 'inlogscherm'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-
+    username = db.Column(db.String(255), primary_key=True)  
+    Password = db.Column(db.String(255), nullable=False)
+    FailedAttempts = db.Column(db.Integer, default=0)
+    LastLogin = db.Column(db.DateTime)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -101,14 +201,210 @@ def login():
     username = data.get('username')
     password = data.get('password')
 
-    user = Inlogscherm.query.filter_by(username=username, password=password).first()
-    if user:
-        return jsonify({'success': True})
+    user = Inlogscherm.query.filter_by(username=username).first()
+    now = datetime.now()
+
+    if user and user.Password == password:
+        user.FailedAttempts = 0
+        user.LastLogin = now
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Inloggen gelukt'})
     else:
-        return jsonify({'success': False}), 401
+        if user:
+            user.FailedAttempts = (user.FailedAttempts or 0) + 1
+            user.LastLogin = now
+            db.session.commit()
+            return jsonify({'success': False, 'message': 'Inlogpoging mislukt'}), 401
+        else:
+            return jsonify({'success': False, 'message': 'Gebruiker niet gevonden'}), 401
+
+# #====================================PV-Berekening======================================== 
+berekeningen = []
+
+@app.route('/PV_Berekenen', methods=['POST'])
+def PV_Berekenen():
+    data = request.get_json()
+    print("DEBUG: Ontvangen data voor berekening:", data)
+    hoek = 90
+    vermogen_PV = 360
+    aantal_panelen = 10
+    gewicht_PV = 27
+    opwekfactor = 0.85
+
+    USP_paneel = gewicht_PV * aantal_panelen * 0.396 * 0.369 + gewicht_PV * aantal_panelen * 0.302 * 3 + gewicht_PV * aantal_panelen * 0.302 * 4.9
+
+    opbrengstPV = vermogen_PV * aantal_panelen * opwekfactor * (hoek / 100)
+    kWh_per_jaar = (opbrengstPV * 880)/1000
+    Totaal_vermogen = aantal_panelen * vermogen_PV
+
+    print(f"DEBUG: USP_paneel: {USP_paneel}")
+    print(f"DEBUG: Opbrengst PV: {opbrengstPV} kWh")
+    print(f"DEBUG: kWh per jaar: {kWh_per_jaar}")
+    print(f"DEBUG: Totaal vermogen: {Totaal_vermogen}")
+
+    resultaat = {
+        'hoek': hoek,
+        'vermogen_PV': vermogen_PV,
+        'aantal_panelen': aantal_panelen,
+        'gewicht_PV': gewicht_PV,
+        'opbrengstPV': opbrengstPV,
+        'USP_paneel': USP_paneel,
+        'kWh_per_jaar': kWh_per_jaar,
+        'Totaal_vermogen': Totaal_vermogen
+    }
+    berekeningen.append(resultaat)
+    print(f"DEBUG: Berekening toegevoegd aan lijst. Totaal aantal berekeningen: {len(berekeningen)}")
+
+    return jsonify(resultaat)
+
+@app.route('/berekeningen', methods=['GET'])
+def get_berekeningen():
+    print(f"DEBUG: Ophalen van alle berekeningen. Aantal: {len(berekeningen)}")
+    return jsonify(berekeningen)
+
+@app.route('/reset_berekeningen', methods=['POST'])
+def reset_berekeningen():
+    print(f"DEBUG: Reset van alle berekeningen. Oude aantal: {len(berekeningen)}")
+    berekeningen.clear()
+    print("DEBUG: Alle berekeningen gewist.")
+    return jsonify({'message': 'Alle berekeningen gewist!'})
 
 
+
+#================================Onderdelen verwijderen================================
+
+
+@app.route('/onderdeel_verwijderen', methods=['POST'])
+def onderdeel_verwijderen():
+    data = request.get_json()
+    onderdeel_id = data.get('OnderdeelID') 
+    print(f"DEBUG: Verzoek om onderdeel te verwijderen met OnderdeelID: {onderdeel_id}")
+
+    try:
+        onderdeel = Onderdeel.query.get(onderdeel_id)
+        if onderdeel:
+            db.session.delete(onderdeel)
+            db.session.commit()
+            print(f"Onderdeel met OnderdeelID '{onderdeel_id}' succesvol verwijderd!")
+            response = {"success": True, "message": f"Onderdeel '{onderdeel_id}' succesvol verwijderd!"}
+            print("RESPONSE:", response)
+            return jsonify(response), 200
+        else:
+            print(f"Onderdeel met OnderdeelID '{onderdeel_id}' niet gevonden.")
+            response = {"success": False, "message": f"Onderdeel '{onderdeel_id}' niet gevonden."}
+            print("RESPONSE:", response)
+            return jsonify(response), 404
+    except Exception as e:
+        db.session.rollback()
+        print(f'Fout bij verwijderen onderdeel: {e}')
+        response = {"success": False, "message": f"Fout bij verwijderen onderdeel: {e}"}
+        print("RESPONSE:", response)
+        return jsonify(response), 500
+
+
+
+#==================================Onderdelen_wijzigen====================================
+
+
+@app.route('/onderdeel_wijzigen', methods=['POST'])
+def onderdeel_wijzigen():
+    data = request.get_json()
+    onderdeel_id = data.get('OnderdeelID')
+    print("DEBUG: Ontvangen data:", data)
+
+    try:
+        onderdeel = Onderdeel.query.get(onderdeel_id)
+        if not onderdeel:
+            response = {"success": False, "message": f"Onderdeel '{onderdeel_id}' niet gevonden."}
+            print("RESPONSE:", response)
+            return jsonify(response), 404
+
+        # Pas de velden aan als ze in de data zitten
+        if 'Nominaal_Vermogen' in data:
+            onderdeel.Nominaal_Vermogen = data['Nominaal_Vermogen']
+        if 'Piek_Vermogen' in data:
+            onderdeel.Piek_Vermogen = data['Piek_Vermogen']
+        if 'Gewicht' in data:
+            onderdeel.Gewicht = data['Gewicht']
+        if 'Levensduur' in data:
+            onderdeel.Levensduur = data['Levensduur']
+        if 'Capaciteit' in data:
+            onderdeel.Capaciteit = data['Capaciteit']
+        if 'Categorie' in data:
+            onderdeel.Categorie = data['Categorie']
+
+        db.session.commit()
+        print(f"Onderdeel '{onderdeel_id}' succesvol gewijzigd!")
+        response = {"success": True, "message": f"Onderdeel '{onderdeel_id}' succesvol gewijzigd!"}
+        print("RESPONSE:", response)
+        return jsonify(response), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f'Fout bij wijzigen onderdeel: {e}')
+        response = {"success": False, "message": f"Fout bij wijzigen onderdeel: {e}"}
+        print("RESPONSE:", response)
+        return jsonify(response), 500
+
+
+#====================================Berekeningen CO2=========================================
+@app.route('/bereken_formule', methods=['POST'])
+def bereken_formule():
+
+    data = request.get_json()
+    PV = data.get('piek_vermogen', 0)
+    NV = data.get('nominaal_vermogen', 0)
+    gewicht = data.get('gewicht', 0)
+    GW = data.get('GW', 0)
+    CP = data.get('capaciteit', 0)
+    LDO = data.get('levensduur', 0)
+    LDP = data.get('levensduur_project', 0)
+    PPL = 0.018
+    CKE = 4.18
+    OpwekPV = 0
+
+       
+    if not berekeningen:
+        return jsonify({'error': 'Geen PV-berekening gevonden!'}), 400
+
+    laatste = berekeningen[-1]
+    opbrengstPV = laatste.get('opbrengstPV', 0)
+    OpwekPV = opbrengstPV * 880/1000
+
+    # Uitstoot productie
+    USP = gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9
+
+
+#debug
+    if CP == 0 or LDO == 0:
+        return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
+
+    # Impactformule CO2
+    try:
+        uitkomst = (
+            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((USP / CP) * (LDP / LDO)) - ((opbrengstPV * 880)*CKE)
+        )
+        #omrekenen naar equivalent
+        huisequivalent = uitkomst/8000
+        #Uitstoot aan stroom CO2
+        uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
+        OpwekPV = opbrengstPV * 880
+
+
+#debug  
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+    return jsonify({
+        'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
+        'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
+        'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
+        'OpwekPV': f"{OpwekPV} kWh per jaar"
+
+    })
 #====================================Oude gepriegel========================================
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 

@@ -264,16 +264,14 @@
     <div class="right-side">
       <div class="pill-group">
         @for (item of [
-          { title: 'Nieuw bestand', link: 'nieuw-bestand.component.html' },
-          { title: 'Voeg onderdeel toe', link: 'onderdeel-toevoegen.component.html' },
+          { title: 'Nieuw bestand', link: '/nieuw-bestand' },
+          { title: 'Voeg onderdeel toe', link: '/onderdeel-toevoegen' },
           { title: 'Beheer login', link: '/inlogpagina' },
-          { title: 'Handleiding', link: 'handleiding.component.html'}
+          { title: 'Handleiding', link: '/handleiding' }
         ]; track item.title) {
           <a
             class="pill"
-        
-            [routerlink]="item.link"
-            target="_blank"
+            [routerLink]="item.link"
             rel="noopener"
           >
             <span>{{ item.title }}</span>
@@ -348,4 +346,4 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
 
-<router-outlet />
+<router-outlet></router-outlet>

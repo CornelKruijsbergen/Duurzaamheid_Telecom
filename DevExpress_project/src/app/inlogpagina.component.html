@@ -15,3 +15,18 @@
 </form>
 <div *ngIf="loginError" style="color:red;">{{ loginError }}</div>
 <div *ngIf="loginSuccess" style="color:green;">Inloggen gelukt!</div>
+<script>
+  this.http.post<any>('http://localhost:5000/login', { username, password })
+    .subscribe({
+      next: res => {
+        if (res.success) {
+          this.router.navigate(['/beheerder']); // <-- navigeer naar beheerderpagina
+        } else {
+          this.foutmelding = 'Onjuist wachtwoord of gebruikersnaam';
+        }
+      },
+      error: () => {
+        this.foutmelding = 'Fout bij inloggen';
+      }
+    });
+</script>

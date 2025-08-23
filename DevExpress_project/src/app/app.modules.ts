@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { PvsystemenComponent } from './pvsystemen.component';
-import { InbedrijfComponent } from './inbedrijf.component';
+//import { InbedrijfComponent } from './inbedrijf.component';
 
 const routes: Routes = [
   { path: 'pvsystemen', component: PvsystemenComponent },
