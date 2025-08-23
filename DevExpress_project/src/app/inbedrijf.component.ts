@@ -1,25 +1,39 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Component, NgModule, enableProdMode } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { DxSliderModule, DxNumberBoxModule } from 'devextreme-angular';
+
+if (!/localhost/.test(document.location.host)) {
+  enableProdMode();
+}
+
+let modulePrefix = '';
+// @ts-ignore
+if (window && window.config?.packageConfigPaths) {
+  modulePrefix = '/app';
+}
 
 @Component({
   selector: 'app-inbedrijf',
-  templateUrl: './inbedrijf.component.html'
+  templateUrl: './inbedrijf.component.html',
+  styleUrls: ['./inbedrijf.component.css']
 })
 export class InbedrijfComponent {
-  result: string = '';
+  value = 10;
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  bereken() {
-    this.http.post<any>('http://localhost:5000/bereken', {})
-      .subscribe({
-        next: res => {
-          this.result = res.result;
-          // NNaar dashboard en geef het resultaat mee als param
-          this.router.navigate(['/dashboard'], { queryParams: { result: this.result } });
-        },
-        error: () => this.result = 'Fout bij berekenen'
-      });
-  }
+  format = (value: string) => `${value}%`;
 }
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    DxSliderModule,
+    DxNumberBoxModule,
+  ],
+  declarations: [InbedrijfComponent],
+  bootstrap: [InbedrijfComponent],
+})
+
+export class AppModule { }
+
+platformBrowserDynamic().bootstrapModule(AppModule);

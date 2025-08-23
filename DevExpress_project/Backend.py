@@ -6,21 +6,6 @@ import csv
 import json
 from datetime import datetime
 
-# Variabelen voor de PV-module of CO2 berekening
-PV = 0
-pvvermogen = 0
-pvhoek = 0
-pvaantal = 0
-PVuitkomst = 0
-inbedrijfstijd = 0
-SomtotaalCO2 = 0
-Nominaalenergie = 0
-Piekvermogen = 0
-Energieopwek = 0
-Levensduurproject = 0
-Levensduuronderdeel = 0
-PPL = 0.018
-Capaciteit = 0
 
 # =====================================Flask Setup========================================
 
@@ -347,9 +332,10 @@ def onderdeel_wijzigen():
 
 
 #====================================Berekeningen CO2=========================================
+CO2_berekend = []
+
 @app.route('/bereken_formule', methods=['POST'])
 def bereken_formule():
-
     data = request.get_json()
     PV = data.get('piek_vermogen', 0)
     NV = data.get('nominaal_vermogen', 0)
@@ -360,9 +346,7 @@ def bereken_formule():
     LDP = data.get('levensduur_project', 0)
     PPL = 0.018
     CKE = 4.18
-    OpwekPV = 0
 
-       
     if not berekeningen:
         return jsonify({'error': 'Geen PV-berekening gevonden!'}), 400
 
@@ -370,38 +354,46 @@ def bereken_formule():
     opbrengstPV = laatste.get('opbrengstPV', 0)
     OpwekPV = opbrengstPV * 880/1000
 
-    # Uitstoot productie
     USP = gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9
 
-
-#debug
     if CP == 0 or LDO == 0:
         return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
 
-    # Impactformule CO2
     try:
         uitkomst = (
             (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((USP / CP) * (LDP / LDO)) - ((opbrengstPV * 880)*CKE)
         )
-        #omrekenen naar equivalent
         huisequivalent = uitkomst/8000
-        #Uitstoot aan stroom CO2
         uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
         OpwekPV = opbrengstPV * 880
 
+        CO2_berekend.append({
+            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
+            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
+            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
+            'OpwekPV': f"{OpwekPV} kWh per jaar"
+        })
 
-#debug  
-    
+        return jsonify({
+            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
+            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
+            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
+            'OpwekPV': f"{OpwekPV} kWh per jaar"
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-    return jsonify({
-        'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
-        'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
-        'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
-        'OpwekPV': f"{OpwekPV} kWh per jaar"
+    
 
-    })
+#==================================Reset alles=========================================
+@app.route('/reset_all', methods=['POST'])
+def reset_all():
+    berekeningen.clear()
+    CO2_berekend.clear()
+    print("DEBUG: Alle waardes gereset.")
+    return jsonify({'message': 'Alle waardes gereset!'})
+
+
 #====================================Oude gepriegel========================================
 if __name__ == '__main__':
     app.run(debug=True)
