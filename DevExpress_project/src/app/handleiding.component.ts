@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-handleiding',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './handleiding.component.html',
-  styleUrl: './handleiding.component.css'
+  styleUrls: ['./handleiding.component.css']
 })
-export class HandleidingComponent {
-
-}
+export class HandleidingComponent { }

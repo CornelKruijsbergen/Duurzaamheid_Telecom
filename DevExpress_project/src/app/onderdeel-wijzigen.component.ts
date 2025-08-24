@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-onderdeel-wijzigen',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './onderdeel-wijzigen.component.html',
-  styleUrl: './onderdeel-wijzigen.component.css'
+  styleUrls: ['./onderdeel-wijzigen.component.css']
 })
-export class OnderdeelWijzigenComponent {
-
-}
+export class OnderdeelWijzigenComponent { }

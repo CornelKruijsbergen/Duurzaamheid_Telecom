@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-onderdeel-verwijderen',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './onderdeel-verwijderen.component.html',
-  styleUrl: './onderdeel-verwijderen.component.css'
+  styleUrls: ['./onderdeel-verwijderen.component.css']
 })
-export class OnderdeelVerwijderenComponent {
-
-}
+export class OnderdeelVerwijderenComponent { }

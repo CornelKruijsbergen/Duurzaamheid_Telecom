@@ -1,39 +1,22 @@
-import { Component, NgModule, enableProdMode } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DxSliderModule, DxNumberBoxModule } from 'devextreme-angular';
-
-if (!/localhost/.test(document.location.host)) {
-  enableProdMode();
-}
-
-let modulePrefix = '';
-// @ts-ignore
-if (window && window.config?.packageConfigPaths) {
-  modulePrefix = '/app';
-}
 
 @Component({
   selector: 'app-inbedrijf',
+  standalone: true,
+  imports: [CommonModule, DxSliderModule, DxNumberBoxModule],
   templateUrl: './inbedrijf.component.html',
   styleUrls: ['./inbedrijf.component.css']
 })
 export class InbedrijfComponent {
   value = 10;
+  result: string = '';
 
   format = (value: string) => `${value}%`;
+
+  bereken() {
+    // Placeholder logica
+    this.result = 'Berekening uitgevoerd!';
+  }
 }
-
-@NgModule({
-  imports: [
-    BrowserModule,
-    DxSliderModule,
-    DxNumberBoxModule,
-  ],
-  declarations: [InbedrijfComponent],
-  bootstrap: [InbedrijfComponent],
-})
-
-export class AppModule { }
-
-platformBrowserDynamic().bootstrapModule(AppModule);
