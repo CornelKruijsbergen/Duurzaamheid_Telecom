@@ -39,3 +39,11 @@ Dus de structuur is:
 3. In home.component.html staat een div met pills, wat de knoppen zijn. Die werken niet meer. 
 
 Om Angular op te starten gebruik je het commando "ng serve"
+
+
+https://nodejs.org/en/download/ of Invoke-WebRequest -Uri "https://nodejs.org/dist/v20.11.1/node-v20.11.1-x64.msi" -OutFile "nodejs.msi"
+npm install
+npm install -g @angular/cli
+npm install devextreme devextreme-angular
+
+Om Angular op te starten gebruik je het commando "ng serve" pad moet wel op \DevExpress_project eindigen
