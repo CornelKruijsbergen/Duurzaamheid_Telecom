@@ -1,59 +1,59 @@
-<h1>Upload een CSV-bestand</h1>
-<form (ngSubmit)="uploadBestand()" #uploadForm="ngForm">
-  <input type="file" (change)="onFileSelected($event)" required>
-  <button type="submit">Upload</button>
-</form>
-<div *ngIf="uploadResult">{{ uploadResult }}</div>
-<button type="button" (click)="gaNaarPVSystemen()">Verder naar PV Systemen</button>
 
-<h2>Onderdelen toevoegen</h2>
-
-<div>
-  <dx-select-box
-    [items]="categorieen"
-    [(value)]="geselecteerdeCategorie"
-    placeholder="Selecteer categorie"
-    (onValueChanged)="laadOnderdelen()">
-  </dx-select-box>
+<div class="nieuw-bestand-flex">
+  <div class="nieuw-bestand-form-card">
+    <h2>Onderdelen toevoegen</h2>
+    <form class="onderdelen-form" (ngSubmit)="$event.preventDefault()">
+      <label>
+        Categorie:
+        <dx-select-box
+          [items]="categorieen"
+          [(value)]="geselecteerdeCategorie"
+          placeholder="Selecteer categorie"
+          (onValueChanged)="laadOnderdelen()">
+        </dx-select-box>
+      </label>
+      <label *ngIf="geselecteerdeCategorie">
+        Onderdeel:
+        <dx-select-box
+          [items]="onderdelen"
+          displayExpr="OnderdeelID"
+          [(value)]="geselecteerdOnderdeel"
+          placeholder="Selecteer onderdeel">
+        </dx-select-box>
+      </label>
+      <label *ngIf="geselecteerdOnderdeel">
+        Hoeveelheid:
+        <dx-number-box
+          [(value)]="kwantiteit"
+          [min]="1"
+          placeholder="Kwantiteit">
+        </dx-number-box>
+      </label>
+      <button type="button" [disabled]="!geselecteerdOnderdeel || kwantiteit < 1" (click)="voegToeAanLijst()">Toevoegen aan lijst</button>
+    </form>
+    <button class="verder-btn" type="button" [disabled]="lijst.length === 0" (click)="bevestigLijst()">Bevestig lijst &amp; verder</button>
+    <div *ngIf="feedback" class="feedback-box">{{ feedback }}</div>
+  </div>
+  <div class="nieuw-bestand-lijst-card">
+    <h3>Geselecteerde onderdelen</h3>
+    <table *ngIf="lijst.length > 0">
+      <thead>
+        <tr>
+          <th>Categorie</th>
+          <th>OnderdeelID</th>
+          <th>Kwantiteit</th>
+          <th>Verwijder</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of lijst; let i = index">
+          <td>{{ o.Categorie }}</td>
+          <td>{{ o.OnderdeelID }}</td>
+          <td>{{ o.kwantiteit }}</td>
+          <td><button type="button" (click)="verwijderUitLijst(i)">Verwijder</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="lijst.length === 0" class="lijst-leeg">Nog geen onderdelen toegevoegd.</div>
+  </div>
 </div>
-
-<div *ngIf="geselecteerdeCategorie">
-  <dx-select-box
-    [items]="onderdelen"
-    displayExpr="OnderdeelID"
-    valueExpr="OnderdeelID"
-    [(value)]="geselecteerdOnderdeel"
-    placeholder="Selecteer onderdeel">
-  </dx-select-box>
-</div>
-
-<div *ngIf="geselecteerdOnderdeel">
-  <dx-number-box
-    [(value)]="kwantiteit"
-    [min]="1"
-    placeholder="Kwantiteit">
-  </dx-number-box>
-  <button type="button" (click)="voegToeAanLijst()">Toevoegen aan lijst</button>
-</div>
-
-<h3>Geselecteerde onderdelen</h3>
-<table *ngIf="lijst.length > 0">
-  <thead>
-    <tr>
-      <th>Categorie</th>
-      <th>Onderdeel</th>
-      <th>Kwantiteit</th>
-      <th>Verwijder</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let o of lijst; let i = index">
-      <td>{{ o.Categorie }}</td>
-      <td>{{ o.OnderdeelID }}</td>
-      <td>{{ o.kwantiteit }}</td>
-      <td><button type="button" (click)="verwijderUitLijst(i)">Verwijder</button></td>
-    </tr>
-  </tbody>
-</table>
-
-<button type="button" [disabled]="lijst.length === 0" (click)="verderNaarPVSystemen()">Verder naar PV Systemen</button>

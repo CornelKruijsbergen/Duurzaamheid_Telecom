@@ -1,33 +1,76 @@
-<h2>Nieuw onderdeel toevoegen</h2>
-<form (ngSubmit)="voegOnderdeelToe()" #onderdeelForm="ngForm">
-  <label>
-    Nominaal Vermogen:
-    <input type="number" name="nominaal_vermogen" [(ngModel)]="nominaal_vermogen" required>
-  </label><br>
-  <label>
-    Piekvermogen:
-    <input type="number" name="piek_vermogen" [(ngModel)]="piek_vermogen" required>
-  </label><br>
-  <label>
-    Installatiedruk:
-    <input type="number" name="installatie_druk" [(ngModel)]="installatie_druk" required>
-  </label><br>
-  <label>
-    Gewicht:
-    <input type="number" name="gewicht" [(ngModel)]="gewicht" required>
-  </label><br>
-  <label>
-    Levensduur:
-    <input type="number" name="levensduur" [(ngModel)]="levensduur" required>
-  </label><br>
-  <label>
-    Capaciteit:
-    <input type="number" name="capaciteit" [(ngModel)]="capaciteit" required>
-  </label><br>
-  <label>
-    Categorie:
-    <input type="text" name="categorie" [(ngModel)]="categorie" required>
-  </label><br>
-  <button type="submit">Toevoegen</button>
-</form>
-<div *ngIf="melding">{{ melding }}</div>
+<div class="beheerder-topbar">
+  <style>
+    .toevoegen-home-btn {
+      position: absolute;
+      top: 1.2rem;
+      right: 2.2rem;
+      background: #fff;
+      color: #222;
+      border: 1.5px solid #ff6f00;
+      border-radius: 2rem;
+      padding: 0.5rem 1.5rem;
+      font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 2px 8px #ffe0b2;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      display: inline-block;
+    }
+    .toevoegen-home-btn:hover {
+      background: #ffe0b2;
+      color: #e65100;
+    }
+  </style>
+  <a class="toevoegen-home-btn" routerLink="/">&lt; Home</a>
+</div>
+<div class="toevoegen-main">
+  <div class="toevoegen-flex-row">
+    <div class="toevoegen-card">
+      <h2 class="toevoegen-title">Nieuw onderdeel toevoegen</h2>
+      <form class="toevoegen-form" (ngSubmit)="voegOnderdeelToe()" #onderdeelForm="ngForm">
+        <label>
+          OnderdeelID:
+          <input type="text" name="onderdeelID" [(ngModel)]="onderdeelID" required>
+        </label>
+        <label>
+          Piekvermogen (W):
+          <input type="number" name="piek_vermogen" [(ngModel)]="piek_vermogen" required>
+        </label>
+        <label>
+          Nominaal vermogen (W):
+          <input type="number" name="nominaal_vermogen" [(ngModel)]="nominaal_vermogen" required>
+        </label>
+        <label>
+          Gewicht (kg):
+          <input type="number" name="gewicht" [(ngModel)]="gewicht" required>
+        </label>
+        <label>
+          Levensduur (uren):
+          <input type="number" name="levensduur" [(ngModel)]="levensduur" required>
+        </label>
+        <label>
+          Capaciteit:
+          <input type="number" name="capaciteit" [(ngModel)]="capaciteit" required>
+        </label>
+        <label>
+          Categorie:
+          <select name="categorie" [(ngModel)]="categorie" required>
+            <option value="" disabled selected>Kies een categorie</option>
+            <option *ngFor="let cat of categorieen" [value]="cat">{{ cat }}</option>
+            <option value="__nieuw__">Nieuw...</option>
+          </select>
+        </label>
+        <label *ngIf="categorie === '__nieuw__'">
+          Nieuwe categorie:
+          <input type="text" name="nieuweCategorie" [(ngModel)]="nieuweCategorie" required>
+        </label>
+        <button type="submit">Toevoegen</button>
+      </form>
+    </div>
+    <div *ngIf="melding" class="toevoegen-melding-box" [ngClass]="meldingType">
+      {{ melding }}
+    </div>
+  </div>
+</div>

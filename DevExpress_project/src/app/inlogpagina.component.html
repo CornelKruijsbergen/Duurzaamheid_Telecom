@@ -1,32 +1,48 @@
-<p>inlogpagina works!</p>
-<p>Inloggen</p>
-<form (ngSubmit)="login()" #loginForm="ngForm">
-  <label>
-    Gebruikersnaam:
-    <input type="text" name="username" [(ngModel)]="username" required>
-  </label>
-  <br>
-  <label>
-    Wachtwoord:
-    <input type="password" name="password" [(ngModel)]="password" required>
-  </label>
-  <br>
-  <button type="submit">Inloggen</button>
-</form>
-<div *ngIf="loginError" style="color:red;">{{ loginError }}</div>
-<div *ngIf="loginSuccess" style="color:green;">Inloggen gelukt!</div>
-<script>
-  this.http.post<any>('http://localhost:5000/login', { username, password })
-    .subscribe({
-      next: res => {
-        if (res.success) {
-          this.router.navigate(['/beheerder']); // <-- navigeer naar beheerderpagina
-        } else {
-          this.foutmelding = 'Onjuist wachtwoord of gebruikersnaam';
-        }
-      },
-      error: () => {
-        this.foutmelding = 'Fout bij inloggen';
-      }
-    });
-</script>
+
+<div class="beheerder-topbar">
+  <style>
+    .login-home-btn {
+      position: absolute;
+      top: 1.2rem;
+      right: 2.2rem;
+      background: #fff;
+    color: #222;
+      border: 1.5px solid #ff6f00;
+      border-radius: 2rem;
+      padding: 0.5rem 1.5rem;
+      font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 2px 8px #ffe0b2;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      display: inline-block;
+    }
+    .login-home-btn:hover {
+      background: #ffe0b2;
+      color: #e65100;
+    }
+  </style>
+
+  <a class="login-home-btn" routerLink="/">&lt; Home</a>
+</div>
+<link href="https://fonts.cdnfonts.com/css/tex-gyre-adventor" rel="stylesheet">
+<main class="login-main">
+  <div class="login-card">
+    <h1 class="login-title">Inloggen beheer ESMAE</h1>
+    <form class="login-form" (ngSubmit)="login()" #loginForm="ngForm">
+      <label>
+        Gebruikersnaam:
+        <input type="text" name="username" [(ngModel)]="username" required>
+      </label>
+      <label>
+        Wachtwoord:
+        <input type="password" name="password" [(ngModel)]="password" required>
+      </label>
+      <button type="submit">Inloggen</button>
+      <div *ngIf="loginError" class="login-error">{{ loginError }}</div>
+      <div *ngIf="loginSuccess" class="login-success">Inloggen gelukt!</div>
+    </form>
+  </div>
+</main>

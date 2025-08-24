@@ -1,27 +1,18 @@
 import { Routes } from '@angular/router';
-
-import { BeheerderComponent } from './beheerder.component';
 import { HomeComponent } from './home.component';
-import { DashboardComponent } from './dashboard.component';
-import { HandleidingComponent } from './handleiding.component';
-import { InbedrijfComponent } from './inbedrijf.component';
-import { InlogpaginaComponent } from './inlogpagina.component';
-import { NieuwBestandComponent } from './nieuw-bestand.component';
-import { OnderdeelToevoegenComponent } from './onderdeel-toevoegen.component';
-import { OnderdeelVerwijderenComponent } from './onderdeel-verwijderen.component';
-import { OnderdeelWijzigenComponent } from './onderdeel-wijzigen.component';
-import { PvsystemenComponent } from './pvsystemen.component';
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'beheerder', component: BeheerderComponent },
-  { path: 'handleiding', component: HandleidingComponent },
-  { path: 'inbedrijf', component: InbedrijfComponent },
-  { path: 'inlogpagina', component: InlogpaginaComponent },
+  { path: 'dashboard', loadComponent: () => import('./dashboard.component').then(m => m.DashboardComponent) },
+  { path: 'beheerder', loadComponent: () => import('./beheerder.component').then(m => m.BeheerderComponent) },
+  { path: 'handleiding', loadComponent: () => import('./handleiding.component').then(m => m.HandleidingComponent) },
+  { path: 'inbedrijf', loadComponent: () => import('./inbedrijf.component').then(m => m.InbedrijfComponent) },
+  { path: 'inlogpagina', loadComponent: () => import('./inlogpagina.component').then(m => m.InlogpaginaComponent) },
   { path: 'nieuw-bestand', loadComponent: () => import('./nieuw-bestand.component').then(m => m.NieuwBestandComponent) },
-  { path: 'onderdeel-toevoegen', component: OnderdeelToevoegenComponent },
-  { path: 'onderdeel-verwijderen', component: OnderdeelVerwijderenComponent },
-  { path: 'onderdeel-wijzigen', component: OnderdeelWijzigenComponent },
-  { path: 'pvsystemen', component: PvsystemenComponent }
+  { path: 'onderdeel-toevoegen', loadComponent: () => import('./onderdeel-toevoegen.component').then(m => m.OnderdeelToevoegenComponent) },
+  { path: 'onderdeel-verwijderen', loadComponent: () => import('./onderdeel-verwijderen.component').then(m => m.OnderdeelVerwijderenComponent) },
+  { path: 'onderdeel-wijzigen', loadComponent: () => import('./onderdeel-wijzigen.component').then(m => m.OnderdeelWijzigenComponent) },
+  { path: 'pvsystemen', loadComponent: () => import('./pvsystemen.component').then(m => m.PvsystemenComponent) },
+
 ];

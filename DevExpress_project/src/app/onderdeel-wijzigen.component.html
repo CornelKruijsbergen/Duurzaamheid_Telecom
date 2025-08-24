@@ -1,1 +1,77 @@
-<p>onderdeel-wijzigen works!</p>
+<div class="beheerder-topbar">
+	<style>
+		.wijzigen-home-btn {
+			position: absolute;
+			top: 1.2rem;
+			right: 2.2rem;
+			background: #fff;
+			color: #222;
+			border: 1.5px solid #ff6f00;
+			border-radius: 2rem;
+			padding: 0.5rem 1.5rem;
+			font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+			font-size: 1.1rem;
+			font-weight: 700;
+			text-decoration: none;
+			box-shadow: 0 2px 8px #ffe0b2;
+			transition: background 0.2s, color 0.2s;
+			z-index: 10;
+			display: inline-block;
+		}
+		.wijzigen-home-btn:hover {
+			background: #ffe0b2;
+			color: #e65100;
+		}
+	</style>
+	<a class="wijzigen-home-btn" [routerLink]="['/']">&lt; Home</a>
+</div>
+<div class="wijzigen-card">
+	<h2 class="wijzigen-title">Onderdeel wijzigen</h2>
+	<form class="wijzigen-form" (ngSubmit)="wijzigOnderdeel()" #wijzigForm="ngForm">
+		<div class="wijzigen-form-fields">
+			<label>
+				Categorie:
+				<select name="categorie" [(ngModel)]="categorie" (change)="onCategorieChange()" required>
+					<option value="" disabled selected>Kies een categorie</option>
+					<option *ngFor="let cat of categorieen" [value]="cat">{{ cat }}</option>
+				</select>
+			</label>
+
+			<label *ngIf="categorie">
+				Onderdeel:
+				<select name="onderdeelID" [(ngModel)]="onderdeelID" (change)="onOnderdeelChange()" required>
+					<option value="" disabled selected>Kies een onderdeel</option>
+					<option *ngFor="let o of onderdelen" [value]="o.OnderdeelID">{{ o.OnderdeelID }}</option>
+				</select>
+			</label>
+
+			<label>
+				Piekvermogen (W):
+				<input type="number" name="piek_vermogen" [(ngModel)]="piek_vermogen" required>
+			</label>
+			<label>
+				Nominaal vermogen (W):
+				<input type="number" name="nominaal_vermogen" [(ngModel)]="nominaal_vermogen" required>
+			</label>
+			<label>
+				Gewicht (kg):
+				<input type="number" name="gewicht" [(ngModel)]="gewicht" required>
+			</label>
+			<label>
+				Levensduur (uren):
+				<input type="number" name="levensduur" [(ngModel)]="levensduur" required>
+			</label>
+			<label>
+				Capaciteit:
+				<input type="number" name="capaciteit" [(ngModel)]="capaciteit" required>
+			</label>
+		</div>
+		<div class="wijzigen-form-knop">
+			<button type="submit" [disabled]="!onderdeelID">Wijzig</button>
+		</div>
+	</form>
+
+	<div *ngIf="melding" class="wijzigen-melding-box" [ngClass]="meldingType">
+		{{ melding }}
+	</div>
+</div>

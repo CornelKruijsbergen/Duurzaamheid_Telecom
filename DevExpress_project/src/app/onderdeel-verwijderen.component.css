@@ -1,0 +1,237 @@
+/* Homeknop styling (zoals beheerder.component.css) */
+.home-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.2rem;
+}
+.home-button {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%);
+  color: #fff;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.6rem 1.5rem 0.6rem 1.1rem;
+  border-radius: 1.2rem;
+  text-decoration: none;
+  box-shadow: 0 2px 8px #ffe0b2;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  margin-right: 0.5rem;
+}
+.home-button:hover {
+  background: linear-gradient(90deg, #e65100 0%, #ff6f00 100%);
+  color: #fffde7;
+  box-shadow: 0 4px 18px #ffd180;
+  transform: translateY(-2px) scale(1.04);
+}
+.home-logo {
+  height: 2.1rem;
+  margin-right: 0.7rem;
+  filter: drop-shadow(0 1px 2px #ffd180);
+}
+/* Bevestigingsprompt styling */
+.verwijderen-bevestig-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff7ed;
+  border: 2px solid #ff6f00;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 32px #ffe0b2, 0 1.5px 8px #ffd180;
+  padding: 2.2rem 2.5rem 1.7rem 2.5rem;
+  z-index: 2000;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  font-size: 1.18rem;
+  color: #e65100;
+  animation: fadein 0.2s;
+}
+.verwijderen-bevestig-tekst {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+.verwijderen-bevestig-knoppen {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.verwijderen-bevestig-knoppen button {
+  padding: 0.7rem 2.2rem;
+  border-radius: 1.2rem;
+  font-size: 1.08rem;
+  font-weight: 700;
+  font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px #ffe0b2;
+}
+.verwijderen-bevestig-knoppen .bevestig-ja {
+  background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%);
+  color: #fff;
+}
+.verwijderen-bevestig-knoppen .bevestig-ja:hover {
+  background: linear-gradient(90deg, #e65100 0%, #ff6f00 100%);
+  box-shadow: 0 4px 18px #ffd180;
+  transform: translateY(-2px) scale(1.04);
+}
+.verwijderen-bevestig-knoppen .bevestig-nee {
+  background: #fff;
+  color: #e65100;
+  border: 1.5px solid #e65100;
+}
+.verwijderen-bevestig-knoppen .bevestig-nee:hover {
+  background: #ffe0b2;
+  color: #b71c1c;
+}
+@import url('https://fonts.cdnfonts.com/css/tex-gyre-adventor');
+
+.verwijderen-card {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(255,111,0,0.13), 0 1.5px 8px #ffe0b2;
+  padding: 2.8rem 3.2rem 2.5rem 3.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 420px;
+  max-width: 650px;
+  margin: 3.5rem auto 0 auto;
+  border: 1.5px solid #ffe0b2;
+}
+
+.verwijderen-title {
+  color: #ff6f00;
+  font-size: 2.5rem;
+  font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-shadow: 0 2px 8px #fff3e0;
+}
+
+.verwijderen-form {
+  display: flex;
+  flex-direction: row;
+  gap: 3.5rem;
+  background: transparent;
+  padding: 0;
+  border-radius: 1.2rem;
+  min-width: 320px;
+  align-items: flex-start;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  position: relative;
+  width: 100%;
+}
+
+.verwijderen-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1 1 0;
+  min-width: 220px;
+}
+
+.verwijderen-form-knop {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  min-width: 140px;
+  flex: 0 0 auto;
+  margin-top: 1.5rem;
+}
+
+.verwijderen-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #ff6f00;
+  font-size: 1.13rem;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  margin-bottom: 0.1rem;
+  letter-spacing: 0.01em;
+}
+
+.verwijderen-form input[type="text"],
+.verwijderen-form input[type="number"],
+.verwijderen-form select {
+  margin-top: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border: 1.5px solid #ff6f00;
+  border-radius: 0.7rem;
+  font-size: 1.08rem;
+  background: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  box-shadow: 0 1.5px 6px #fff3e0;
+}
+
+.verwijderen-form input:focus,
+.verwijderen-form select:focus {
+  border-color: #e65100;
+  outline: none;
+  box-shadow: 0 0 0 2px #ffe0b2;
+}
+
+.verwijderen-form button {
+  margin-top: 0.8rem;
+  padding: 0.9rem 2.2rem;
+  background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%);
+  color: #fff;
+  border: none;
+  border-radius: 1.2rem;
+  font-size: 1.18rem;
+  font-weight: 700;
+  font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 12px #ffe0b2;
+  letter-spacing: 0.01em;
+}
+.verwijderen-form button:hover {
+  background: linear-gradient(90deg, #e65100 0%, #ff6f00 100%);
+  box-shadow: 0 4px 18px #ffd180;
+  transform: translateY(-2px) scale(1.04);
+}
+
+.verwijderen-melding-box {
+  min-width: 220px;
+  max-width: 320px;
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  box-shadow: 0 2px 8px #ffe0b2;
+  background: #fff7ed;
+  color: #222;
+  border: 1.5px solid #ff6f00;
+  text-align: left;
+  word-break: break-word;
+  position: fixed;
+  top: 2.5rem;
+  right: 2.5rem;
+  z-index: 1000;
+  animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.verwijderen-melding-box.success {
+  border-color: #388e3c;
+  color: #388e3c;
+}
+.verwijderen-melding-box.error {
+  border-color: #d32f2f;
+  color: #d32f2f;
+}

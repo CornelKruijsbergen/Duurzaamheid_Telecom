@@ -1,1 +1,37 @@
-<p>onderdeel-verwijderen works!</p>
+<div class="home-button-container">
+	<a routerLink="/" class="home-button">&lt; Home</a>
+</div>
+<div class="verwijderen-card">
+	<h2 class="verwijderen-title">Onderdeel verwijderen</h2>
+	<form class="verwijderen-form" [class.prompt-open]="bevestigPrompt" (ngSubmit)="verwijderOnderdeel()" #verwijderForm="ngForm">
+		<div class="verwijderen-form-fields">
+			<label>
+				Categorie:
+				<select name="categorie" [(ngModel)]="categorie" (change)="onCategorieChange()" required>
+					<option value="" disabled selected>Kies een categorie</option>
+					<option *ngFor="let cat of categorieen" [value]="cat">{{ cat }}</option>
+				</select>
+			</label>
+			<label *ngIf="categorie">
+				Onderdeel:
+				<select name="onderdeelID" [(ngModel)]="onderdeelID" required>
+					<option value="" disabled selected>Kies een onderdeel</option>
+					<option *ngFor="let o of onderdelen" [value]="o.OnderdeelID">{{ o.OnderdeelID }}</option>
+				</select>
+			</label>
+		</div>
+			<div class="verwijderen-form-knop">
+				<button type="button" [disabled]="!onderdeelID || bevestigPrompt" (click)="verwijderOnderdeel()">Verwijderen</button>
+			</div>
+	</form>
+			<div *ngIf="bevestigPrompt" class="verwijderen-bevestig-box">
+				<div class="verwijderen-bevestig-tekst">Weet je het zeker? Dit kan niet ongedaan worden gemaakt.</div>
+				<div class="verwijderen-bevestig-knoppen">
+					<button type="button" class="bevestig-ja" (click)="bevestigVerwijderen(true)">Ja</button>
+					<button type="button" class="bevestig-nee" (click)="bevestigVerwijderen(false)">Nee</button>
+				</div>
+			</div>
+		<div *ngIf="melding" class="verwijderen-melding-box" [ngClass]="meldingType">
+			{{ melding }}
+		</div>
+</div>

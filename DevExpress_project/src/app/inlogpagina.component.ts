@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-inlogpagina',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, RouterModule],
   templateUrl: './inlogpagina.component.html',
   styleUrls: ['./inlogpagina.component.css']
 })
@@ -31,12 +32,18 @@ export class InlogpaginaComponent {
           // Navigeer naar de beheerder-pagina na succes
           this.router.navigate(['/beheerder']);
         } else {
-          this.loginError = 'Ongeldige inloggegevens';
+          // Toon de backend message bij fout
+          this.loginError = res.message || 'Ongeldige inloggegevens';
           this.loginSuccess = false;
         }
       },
-      error: () => {
-        this.loginError = 'Serverfout';
+      error: err => {
+        // Probeer backend message te tonen bij error response
+        if (err.error && err.error.message) {
+          this.loginError = err.error.message;
+        } else {
+          this.loginError = 'Serverfout';
+        }
         this.loginSuccess = false;
       }
     });

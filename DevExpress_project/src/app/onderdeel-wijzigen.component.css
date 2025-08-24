@@ -1,0 +1,172 @@
+@import url('https://fonts.cdnfonts.com/css/tex-gyre-adventor');
+
+.wijzigen-card {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(255,111,0,0.13), 0 1.5px 8px #ffe0b2;
+  padding: 2.8rem 3.2rem 2.5rem 3.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 420px;
+  max-width: 650px;
+  margin: 3.5rem auto 0 auto;
+  border: 1.5px solid #ffe0b2;
+}
+
+.wijzigen-title {
+  color: #ff6f00;
+  font-size: 2.5rem;
+  font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-shadow: 0 2px 8px #fff3e0;
+}
+
+.wijzigen-form {
+  display: flex;
+  flex-direction: row;
+  gap: 3.5rem;
+  background: transparent;
+  padding: 0;
+  border-radius: 1.2rem;
+  min-width: 320px;
+  align-items: flex-start;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  position: relative;
+  width: 100%;
+}
+
+.wijzigen-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1 1 0;
+  min-width: 220px;
+}
+
+.wijzigen-form-knop {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  min-width: 140px;
+  flex: 0 0 auto;
+  margin-top: 1.5rem;
+}
+.wijzigen-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #ff6f00;
+  font-size: 1.13rem;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  margin-bottom: 0.1rem;
+  letter-spacing: 0.01em;
+}
+
+.wijzigen-form {
+  display: flex;
+  flex-direction: row;
+  gap: 2.5rem;
+  background: transparent;
+  padding: 0;
+  border-radius: 1.2rem;
+  min-width: 320px;
+  align-items: flex-start;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  position: relative;
+}
+
+.wijzigen-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1 1 0;
+}
+
+.wijzigen-form-knop {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  min-width: 120px;
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+.wijzigen-form input[type="text"],
+.wijzigen-form input[type="number"],
+.wijzigen-form select {
+  margin-top: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border: 1.5px solid #ff6f00;
+  border-radius: 0.7rem;
+  font-size: 1.08rem;
+  background: #fff;
+  transition: border 0.2s, box-shadow 0.2s;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  box-shadow: 0 1.5px 6px #fff3e0;
+}
+.wijzigen-form input:focus,
+.wijzigen-form select:focus {
+  border-color: #e65100;
+  outline: none;
+  box-shadow: 0 0 0 2px #ffe0b2;
+}
+
+.wijzigen-form button {
+  margin-top: 0.8rem;
+  padding: 0.9rem 2.2rem;
+  background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%);
+  color: #fff;
+  border: none;
+  border-radius: 1.2rem;
+  font-size: 1.18rem;
+  font-weight: 700;
+  font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 12px #ffe0b2;
+  letter-spacing: 0.01em;
+}
+.wijzigen-form button:hover {
+  background: linear-gradient(90deg, #e65100 0%, #ff6f00 100%);
+  box-shadow: 0 4px 18px #ffd180;
+  transform: translateY(-2px) scale(1.04);
+}
+
+.wijzigen-melding-box {
+  min-width: 220px;
+  max-width: 320px;
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  font-family: 'TeXGyreAdventor', Arial, sans-serif;
+  box-shadow: 0 2px 8px #ffe0b2;
+  background: #fff7ed;
+  color: #222;
+  border: 1.5px solid #ff6f00;
+  text-align: left;
+  word-break: break-word;
+  position: fixed;
+  top: 2.5rem;
+  right: 2.5rem;
+  z-index: 1000;
+  animation: fadein 0.3s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.wijzigen-melding-box.success {
+  border-color: #388e3c;
+  color: #388e3c;
+}
+.wijzigen-melding-box.error {
+  border-color: #d32f2f;
+  color: #d32f2f;
+}

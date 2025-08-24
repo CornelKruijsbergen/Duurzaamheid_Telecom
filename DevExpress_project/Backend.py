@@ -1,3 +1,5 @@
+
+
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -5,15 +7,18 @@ import pandas as pd
 import csv
 import json
 from datetime import datetime
+from flask_cors import CORS
 
 
 # =====================================Flask Setup========================================
+
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TeamTelecom2025!@localhost:3306/onderdelendb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/')
 def home():
@@ -96,16 +101,23 @@ def get_catdata():
         for row in reader:
             if not row:
                 continue
-            onderdeel_naam = row[0]
-            # Ondedeel opzoeken in de database
-            onderdeel = Onderdeel.query.filter_by(OnderdeelID=onderdeel_naam).first()
-            if onderdeel:
-               #Telt hier alles op voor de forumele straks
-                piek_vermogen += onderdeel.Piek_Vermogen
-                nominaal_vermogen += onderdeel.Nominaal_Vermogen
-                gewicht += onderdeel.Gewicht
-                capaciteit += onderdeel.Capaciteit
-                levensduur += onderdeel.Levensduur
+        onderdeel_naam = row[0]
+        kwantiteit = int(row[1]) if len(row) > 1 and row[1].isdigit() else 1
+        # Ondedeel opzoeken in de database
+        onderdeel = Onderdeel.query.filter_by(OnderdeelID=onderdeel_naam).first()
+        if onderdeel:
+            # Debug: print per onderdeel
+            print(f"DEBUG onderdeel: {onderdeel_naam}, kwantiteit: {kwantiteit}, "
+                f"Piek_Vermogen: {onderdeel.Piek_Vermogen}, "
+                f"Nominaal_Vermogen: {onderdeel.Nominaal_Vermogen}, "
+                f"Gewicht: {onderdeel.Gewicht}, "
+                f"Capaciteit: {onderdeel.Capaciteit}, "
+                f"Levensduur: {onderdeel.Levensduur}")
+            piek_vermogen += onderdeel.Piek_Vermogen * kwantiteit
+            nominaal_vermogen += onderdeel.Nominaal_Vermogen * kwantiteit
+            gewicht += onderdeel.Gewicht * kwantiteit
+            capaciteit += onderdeel.Capaciteit * kwantiteit
+            levensduur += onderdeel.Levensduur * kwantiteit
 
     # debug
     print("DEBUG /catdata resultaat:", piek_vermogen, nominaal_vermogen, gewicht, capaciteit, levensduur)
@@ -116,6 +128,45 @@ def get_catdata():
     "capaciteit": capaciteit,
     "levensduur": levensduur
 })
+
+
+#=================================Input verwerken ==============================
+
+# onderdelenlijst (JSON)  verwerken
+@app.route('/verwerk_onderdelen_lijst', methods=['POST'])
+def verwerk_onderdelen_lijst():
+    onderdelen_lijst = request.get_json()
+    piek_vermogen = 0
+    nominaal_vermogen = 0
+    gewicht = 0
+    capaciteit = 0
+    levensduur = 0
+    if not isinstance(onderdelen_lijst, list):
+        return jsonify({'error': 'Lijst verwacht'}), 400
+    for item in onderdelen_lijst:
+        onderdeel_naam = item.get('OnderdeelID') or item.get('onderdeelID') or item.get('onderdeel_naam')
+        kwantiteit = int(item.get('kwantiteit', 1))
+        onderdeel = Onderdeel.query.filter_by(OnderdeelID=onderdeel_naam).first()
+        if onderdeel:
+            print(f"DEBUG onderdeel: {onderdeel_naam}, kwantiteit: {kwantiteit}, "
+                  f"Piek_Vermogen: {onderdeel.Piek_Vermogen}, "
+                  f"Nominaal_Vermogen: {onderdeel.Nominaal_Vermogen}, "
+                  f"Gewicht: {onderdeel.Gewicht}, "
+                  f"Capaciteit: {onderdeel.Capaciteit}, "
+                  f"Levensduur: {onderdeel.Levensduur}")
+            piek_vermogen += onderdeel.Piek_Vermogen * kwantiteit
+            nominaal_vermogen += onderdeel.Nominaal_Vermogen * kwantiteit
+            gewicht += onderdeel.Gewicht * kwantiteit
+            capaciteit += onderdeel.Capaciteit * kwantiteit
+            levensduur += onderdeel.Levensduur * kwantiteit
+    print("DEBUG /verwerk_onderdelen_lijst resultaat:", piek_vermogen, nominaal_vermogen, gewicht, capaciteit, levensduur)
+    return jsonify({
+        "piek_vermogen": piek_vermogen,
+        "nominaal_vermogen": nominaal_vermogen,
+        "gewicht": gewicht,
+        "capaciteit": capaciteit,
+        "levensduur": levensduur
+    })
 
 
 #====================================Onderdelen_toevoegen========================================
@@ -166,6 +217,19 @@ def onderdeel_toevoegen():
         response = {"success": False, "message": f"Fout bij toevoegen onderdeel: {e}"}
         print("RESPONSE:", response)
         return jsonify(response), 500
+    
+    #unieke categorieën ophalen
+@app.route('/categorieen', methods=['GET'])
+def get_categorieen():
+    try:
+        categorieen = db.session.query(Onderdeel.Categorie).distinct().all()
+        
+        unieke_categorieen = sorted({cat[0] for cat in categorieen if cat[0]})
+        return jsonify({'categorieen': unieke_categorieen})
+    except Exception as e:
+        print(f'Fout bij ophalen categorieën: {e}')
+        return jsonify({'categorieen': [], 'error': str(e)}), 500
+
 
 
 
@@ -174,7 +238,7 @@ def onderdeel_toevoegen():
 
 
 class Inlogscherm(db.Model):
-    __tablename__ = 'inlogscherm'
+    __tablename__ = 'inloggen'
     username = db.Column(db.String(255), primary_key=True)  
     Password = db.Column(db.String(255), nullable=False)
     FailedAttempts = db.Column(db.Integer, default=0)
@@ -302,7 +366,7 @@ def onderdeel_wijzigen():
         if not onderdeel:
             response = {"success": False, "message": f"Onderdeel '{onderdeel_id}' niet gevonden."}
             print("RESPONSE:", response)
-            return jsonify(response), 404
+            return jsonify(response), 200  # Altijd 200, met success False
 
         # Pas de velden aan als ze in de data zitten
         if 'Nominaal_Vermogen' in data:
@@ -328,7 +392,31 @@ def onderdeel_wijzigen():
         print(f'Fout bij wijzigen onderdeel: {e}')
         response = {"success": False, "message": f"Fout bij wijzigen onderdeel: {e}"}
         print("RESPONSE:", response)
-        return jsonify(response), 500
+        return jsonify(response), 200  # Altijd 200, met success False
+    
+    # alle onderdelen ophalen
+@app.route('/onderdelen_van_categorie', methods=['GET'])
+def onderdelen_van_categorie():
+    categorie = request.args.get('categorie')
+    if not categorie:
+        return jsonify({'error': 'Geen categorie opgegeven'}), 400
+    try:
+        onderdelen = Onderdeel.query.filter_by(Categorie=categorie).all()
+        result = [
+            {
+                'OnderdeelID': o.OnderdeelID,
+                'Nominaal_Vermogen': o.Nominaal_Vermogen,
+                'Piek_Vermogen': o.Piek_Vermogen,
+                'Gewicht': o.Gewicht,
+                'Levensduur': o.Levensduur,
+                'Capaciteit': o.Capaciteit,
+                'Categorie': o.Categorie
+            }
+            for o in onderdelen
+        ]
+        return jsonify({'onderdelen': result})
+    except Exception as e:
+        return jsonify({'onderdelen': [], 'error': str(e)}), 500
 
 
 #====================================Berekeningen CO2=========================================

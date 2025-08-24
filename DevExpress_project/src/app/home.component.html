@@ -1,6 +1,8 @@
-<style>
-  /* Plak hier de CSS uit app.component.html */
-</style>
+
+
+
+<!-- TeX Gyre Adventor BOLD font toevoegen -->
+<link href="https://fonts.cdnfonts.com/css/tex-gyre-adventor" rel="stylesheet">
 
 <main class="main">
   <div class="content">
@@ -17,22 +19,23 @@
           <!-- ...SVG gradients en clipPath... -->
         </defs>
       </svg>
-      <h1>Welkom bij ESMAE!, {{ title }}</h1>
-      <p>De Electrical Systainability Measure Analyser for Electronics, de tool die duurzaamheid makkelijk maakt! 🎉</p>
+  <h1>Welkom bij {{ title }}!</h1>
+  <p>De Electrical Systainability Measure Analyser for Electronics, de tool die duurzaamheid berekenen makkelijk maakt!</p>
+  <img src="assets/Logo-Arcadis.png" alt="Arcadis Logo" style="max-width: 220px; margin-top: 2rem; display: block;" />
     </div>
     <div class="divider" role="separator" aria-label="Divider"></div>
     <div class="right-side">
       <div class="pill-group">
-        <a class="pill" routerLink="/nieuw-bestand" rel="noopener">
+        <a class="pill" routerLink="/nieuw-bestand">
           <span>Nieuw bestand</span>
         </a>
-        <a class="pill" routerLink="/onderdeel-toevoegen" rel="noopener">
+        <a class="pill" routerLink="/onderdeel-toevoegen">
           <span>Voeg onderdeel toe</span>
         </a>
-        <a class="pill" routerLink="/inlogpagina" rel="noopener">
+        <a class="pill" routerLink="/inlogpagina">
           <span>Beheer login</span>
         </a>
-        <a class="pill" routerLink="/handleiding" rel="noopener">
+        <a class="pill" routerLink="/handleiding">
           <span>Handleiding</span>
         </a>
       </div>

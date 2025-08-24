@@ -1,0 +1,113 @@
+.feedback-box {
+	margin-top: 1.5rem;
+	background: #fff3e0;
+	color: #e65100;
+	border-radius: 0.7rem;
+	padding: 1rem 1.2rem;
+	font-size: 1.08rem;
+	text-align: center;
+	box-shadow: 0 2px 8px #ffe0b2;
+}
+/* Layout voor formulier links en lijst rechts */
+.nieuw-bestand-flex {
+	display: flex;
+	flex-direction: row;
+	gap: 2.5rem;
+	align-items: flex-start;
+	justify-content: center;
+	margin-top: 2.5rem;
+}
+.nieuw-bestand-form-card {
+	background: #fff7ed;
+	border-radius: 1.2rem;
+	box-shadow: 0 4px 32px #ffe0b2, 0 1.5px 8px #ffd180;
+	padding: 2.2rem 2.5rem 2.2rem 2.5rem;
+	min-width: 340px;
+	max-width: 400px;
+	font-family: 'TeXGyreAdventor', Arial, sans-serif;
+}
+.onderdelen-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.3rem;
+}
+.onderdelen-form label {
+	display: flex;
+	flex-direction: column;
+	font-weight: 600;
+	color: #e65100;
+	font-size: 1.08rem;
+}
+.onderdelen-form button {
+	margin-top: 1.2rem;
+	padding: 0.8rem 0;
+	border-radius: 1.2rem;
+	background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%);
+	color: #fff;
+	font-size: 1.13rem;
+	font-weight: 700;
+	border: none;
+	cursor: pointer;
+	box-shadow: 0 2px 8px #ffe0b2;
+	transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.onderdelen-form button:disabled {
+	background: #ffe0b2;
+	color: #bdbdbd;
+	cursor: not-allowed;
+}
+.verder-btn {
+	width: 100%;
+	margin-top: 2.2rem;
+	font-size: 1.15rem;
+}
+.nieuw-bestand-lijst-card {
+	background: #fff7ed;
+	border-radius: 1.2rem;
+	box-shadow: 0 4px 32px #ffe0b2, 0 1.5px 8px #ffd180;
+	padding: 2.2rem 2.5rem 2.2rem 2.5rem;
+	min-width: 340px;
+	max-width: 420px;
+	font-family: 'TeXGyreAdventor', Arial, sans-serif;
+}
+.nieuw-bestand-lijst-card h3 {
+	text-align: center;
+	color: #e65100;
+	margin-bottom: 1.5rem;
+}
+.nieuw-bestand-lijst-card table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 1.2rem;
+}
+.nieuw-bestand-lijst-card th, .nieuw-bestand-lijst-card td {
+	padding: 0.7rem 0.5rem;
+	text-align: left;
+	border-bottom: 1px solid #ffe0b2;
+}
+.nieuw-bestand-lijst-card th {
+	color: #e65100;
+	font-weight: 700;
+	background: #fff3e0;
+}
+.nieuw-bestand-lijst-card td button {
+	background: #fff;
+	color: #e65100;
+	border: 1.5px solid #e65100;
+	border-radius: 0.7rem;
+	padding: 0.4rem 1.2rem;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.nieuw-bestand-lijst-card td button:hover {
+	background: #ffe0b2;
+	color: #b71c1c;
+}
+.lijst-leeg {
+	text-align: center;
+	color: #bdbdbd;
+	font-style: italic;
+	margin-top: 2.5rem;
+}

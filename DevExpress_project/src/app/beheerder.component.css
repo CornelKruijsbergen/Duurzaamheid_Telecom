@@ -1,0 +1,130 @@
+/* Topbar met home-knop */
+.beheerder-topbar {
+	width: 100vw;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 1.2rem 2.2rem 0.2rem 0;
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+
+.home-btn {
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	font-size: 1.1rem;
+	color: #ff6f00;
+	background: #fff7ed;
+	border: 1.5px solid #ff6f00;
+	border-radius: 2rem;
+	padding: 0.5rem 1.5rem;
+	text-decoration: none;
+	font-weight: 700;
+	box-shadow: 0 2px 8px #ffe0b2;
+	transition: background 0.2s, color 0.2s;
+}
+.home-btn:hover {
+	background: #ffe0b2;
+	color: #e65100;
+}
+@import url('https://fonts.cdnfonts.com/css/tex-gyre-adventor');
+
+.beheerder-main {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, #fff7ed 0%, #ffe0b2 100%);
+}
+
+.beheerder-card {
+	background: #fff;
+	border-radius: 1.5rem;
+	box-shadow: 0 4px 32px rgba(255,111,0,0.10);
+	padding: 2.5rem 2.5rem 2rem 2.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 340px;
+}
+
+.beheerder-title {
+	color: #ff6f00;
+	font-size: 2.5rem;
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	font-weight: 700;
+	margin-bottom: 2rem;
+	letter-spacing: 0.03em;
+	text-align: center;
+	text-shadow: 0 2px 8px #fff3e0;
+}
+
+.beheerder-pill-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+}
+
+.pill {
+	display: flex;
+	align-items: center;
+	background: #fff7ed;
+	color: #ff6f00;
+	padding: 1rem 2.5rem;
+	border-radius: 2.75rem;
+	border: 1.5px solid #ff6f00;
+	font-size: 1.1rem;
+	font-weight: 700;
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	text-decoration: none;
+	transition: background 0.3s, color 0.3s;
+	box-shadow: 0 2px 8px #ffe0b2;
+}
+.pill:hover {
+	background: #ffe0b2;
+	color: #e65100;
+}
+main {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.beheerder-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.beheerder-pill-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+}
+
+.pill {
+	display: flex;
+	align-items: center;
+	background: #f0f0f0;
+	color: #333;
+	padding: 1rem 2.5rem;
+	border-radius: 2.75rem;
+	border: none;
+	font-size: 1.1rem;
+	font-weight: 500;
+	text-decoration: none;
+	transition: background 0.3s;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.pill:hover {
+	background: #e0e0e0;
+}
