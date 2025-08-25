@@ -1,4 +1,3 @@
-
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -460,7 +459,29 @@ def opslaan_onderdelenlijst():
 @app.route('/laatste_onderdelenlijst', methods=['GET'])
 def get_laatste_onderdelenlijst():
     return jsonify({'onderdelenlijst': laatste_onderdelenlijst})
-    
+
+#==========================Wachtwoord wijzigen=================================
+
+@app.route('/wijzig_wachtwoord', methods=['POST'])
+def wijzig_wachtwoord():
+    data = request.get_json()
+    gebruikersnaam = data.get('username')  
+    nieuw_wachtwoord = data.get('password')  
+    bevestig_wachtwoord = data.get('bevestig_wachtwoord')
+
+    if not gebruikersnaam or not nieuw_wachtwoord or not bevestig_wachtwoord:
+        return jsonify({'success': False, 'message': 'Vul alle velden in'}), 400
+
+    if nieuw_wachtwoord != bevestig_wachtwoord:
+        return jsonify({'success': False, 'message': 'Wachtwoorden komen niet overeen'}), 400
+
+    gebruiker = Inlogscherm.query.filter_by(username=gebruikersnaam).first()
+    if not gebruiker:
+        return jsonify({'success': False, 'message': 'Gebruiker niet gevonden'}), 404
+
+    gebruiker.Password = nieuw_wachtwoord
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Wachtwoord succesvol gewijzigd'})
 
 #==================================Reset alles=========================================
 @app.route('/reset_all', methods=['POST'])

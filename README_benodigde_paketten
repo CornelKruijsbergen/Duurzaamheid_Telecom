@@ -1,0 +1,10 @@
+De volgende pakketten zijn geinstalleerd:
+
+
+npm install
+npm install -g @angular/cli
+npm install devextreme devextreme-angular
+py -m pip install flask
+py -m pip install flask-cors
+npm install jspdf html2canvas --save
+npm install --save-dev @types/jspdf @types/html2canvas

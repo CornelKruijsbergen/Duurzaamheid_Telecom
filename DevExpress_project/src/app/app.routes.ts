@@ -14,5 +14,5 @@ export const routes: Routes = [
   { path: 'onderdeel-verwijderen', loadComponent: () => import('./onderdeel-verwijderen.component').then(m => m.OnderdeelVerwijderenComponent) },
   { path: 'onderdeel-wijzigen', loadComponent: () => import('./onderdeel-wijzigen.component').then(m => m.OnderdeelWijzigenComponent) },
   { path: 'pvsystemen', loadComponent: () => import('./pvsystemen.component').then(m => m.PvsystemenComponent) },
-
+  { path: 'gebruikers_beheer', loadComponent: () => import('./gebruikers_beheer.component').then(m => m.GebruikersBeheerComponent) },
 ];
