@@ -1,0 +1,219 @@
+/* Grid layout for PV form fields */
+.pv-form-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 1.1rem;
+}
+
+.pv-form-row {
+	display: flex;
+	align-items: center;
+	gap: 1.2rem;
+}
+
+.pv-form-row label {
+	flex: 0 0 170px;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.pv-form-row input,
+.pv-form-row select {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.toggle-row {
+	justify-content: flex-start;
+}
+
+.submit-row {
+	justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+	.pv-form-row {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.3rem;
+	}
+	.pv-form-row label {
+		flex: unset;
+		margin-bottom: 0.2rem;
+	}
+	.submit-row {
+		justify-content: stretch;
+	}
+}
+.topbar {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-top: 1.2rem;
+	margin-bottom: 0.5rem;
+}
+
+.topbar-btn {
+	background: orange;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 0.6rem 1.3rem;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+	transition: background 0.2s;
+	margin-right: 2.2rem;
+}
+.topbar-btn:hover {
+	background: #ff9800;
+}
+.toggle-label {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	font-weight: 600;
+	margin-bottom: 1.2rem;
+}
+
+.toggle-value {
+	min-width: 2.5rem;
+	text-align: left;
+	font-weight: 500;
+	color: #ff9800;
+}
+
+/* Custom switch */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 48px;
+	height: 28px;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: .4s;
+	border-radius: 28px;
+}
+
+.slider:before {
+	position: absolute;
+	content: "";
+	height: 20px;
+	width: 20px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	transition: .4s;
+	border-radius: 50%;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+input:checked + .slider {
+	background-color: #ff9800;
+}
+
+input:checked + .slider:before {
+	transform: translateX(20px);
+}
+.pv-titel {
+	text-align: center;
+	font-size: 2rem;
+	font-weight: bold;
+	margin-top: 2.2rem;
+	margin-bottom: 1.2rem;
+	color: #ff9800;
+	letter-spacing: 0.02em;
+}
+body, .pv-form {
+	font-family: 'TeX Gyre Adventor', Arial, sans-serif;
+}
+
+.pv-form {
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+	padding: 2rem 2.5rem 2rem 2.5rem;
+	max-width: 420px;
+	margin: 2rem auto 1.5rem auto;
+	display: flex;
+	flex-direction: column;
+
+.hoek-info img {
+	display: block;
+	margin: 1rem auto 0 auto;
+	max-width: 700px;
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+	display: flex;
+	flex-direction: column;
+	font-weight: 600;
+	color: #333;
+	gap: 0.3rem;
+}
+
+.pv-form input, .pv-form select {
+	padding: 0.5rem 0.7rem;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 1rem;
+	background: #fafbfc;
+	margin-top: 0.2rem;
+}
+
+.pv-form button[type="submit"] {
+	background: orange;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 0.7rem 1.2rem;
+	font-size: 1.1rem;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: 0.5rem;
+	transition: background 0.2s;
+}
+.pv-form button[type="submit"]:hover {
+	background: #ff9800;
+}
+
+.hoek-info {
+	background: #f7f7f7;
+	border-radius: 8px;
+	padding: 1rem;
+	margin: 1.5rem auto 0 auto;
+	max-width: 420px;
+	text-align: center;
+	box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}
+
+.alert-success {
+	background: #e8f5e9;
+	color: #256029;
+	border: 1px solid #b2dfdb;
+	border-radius: 6px;
+	padding: 0.8rem 1rem;
+	margin: 1.5rem auto 1rem auto;
+	max-width: 420px;
+	text-align: center;
+	font-weight: 600;
+	box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}

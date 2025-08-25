@@ -1,30 +1,58 @@
-
-<p>pvsystemen works!</p>
-
-<div *ngIf="message" class="alert alert-success">
-  {{ message }}
+<div class="topbar">
+  <button class="topbar-btn" routerLink="/home">Home</button>
 </div>
 
-<form (ngSubmit)="submitForm()" #pvForm="ngForm">
-  <label>
-    PV (0 als er geen PV is, 1 als er wel PV is):
-    <input type="number" name="PV" [(ngModel)]="PV" required>
-  </label>
-  <br>
-  <label>
-    PV Vermogen:
-    <input type="number" name="pvvermogen" [(ngModel)]="pvvermogen" required>
-  </label>
-  <br>
-  <label>
-    PV Hoek:
-    <input type="number" name="pvhoek" [(ngModel)]="pvhoek" required>
-  </label>
-  <br>
-  <label>
-    PV Aantal:
-    <input type="number" name="pvaantal" [(ngModel)]="pvaantal" required>
-  </label>
-  <br>
-  <button type="submit">Opslaan</button>
+
+<h2 class="pv-titel">Bevat het PV-panelen?</h2>
+
+
+
+<form (ngSubmit)="submitForm()" #pvForm="ngForm" class="pv-form">
+  <div class="pv-form-grid">
+    <div class="pv-form-row toggle-row">
+      <label class="toggle-label">
+        <span>Bevat het PV-panelen?</span>
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="heeftPV" name="heeftPV">
+          <span class="slider round"></span>
+        </label>
+        <span class="toggle-value">{{ heeftPV ? 'Ja' : 'Nee' }}</span>
+      </label>
+    </div>
+    <div class="pv-form-row">
+      <label for="gewicht">Gewicht zonnepaneel (kg):</label>
+      <input type="number" id="gewicht" name="gewicht" [(ngModel)]="gewicht" min="0" required [disabled]="!heeftPV">
+    </div>
+    <div class="pv-form-row">
+      <label for="aantal">Aantal zonnepanelen:</label>
+      <input type="number" id="aantal" name="aantal" [(ngModel)]="aantal" min="1" required [disabled]="!heeftPV">
+    </div>
+    <div class="pv-form-row">
+      <label for="hoek">Hoek (°):</label>
+      <input type="number" id="hoek" name="hoek" [(ngModel)]="hoek" min="0" max="90" required [disabled]="!heeftPV">
+    </div>
+    <div class="pv-form-row">
+      <label for="vermogen">Vermogen paneel:</label>
+      <select id="vermogen" name="vermogen" [(ngModel)]="vermogen" required [disabled]="!heeftPV">
+        <option *ngFor="let v of vermogens" [value]="v">{{ v }}</option>
+      </select>
+    </div>
+    <div class="pv-form-row">
+      <label for="windrichting">Windrichting:</label>
+      <select id="windrichting" name="windrichting" [(ngModel)]="windrichting" required [disabled]="!heeftPV">
+        <option *ngFor="let w of windrichtingen" [value]="w">{{ w }}</option>
+      </select>
+    </div>
+    <div class="pv-form-row submit-row">
+      <button type="submit">Verder</button>
+    </div>
+    <div *ngIf="message" class="alert alert-success">
+      {{ message }}
+    </div>
+  </div>
 </form>
+
+<div class="hoek-info">
+  <strong>Hoek:</strong> Zie afbeelding<br>
+  <img src="assets/tabel-van-hespul-2.webp" alt="Tabel van Hespul" style="max-width: 100%; height: auto;">
+</div>

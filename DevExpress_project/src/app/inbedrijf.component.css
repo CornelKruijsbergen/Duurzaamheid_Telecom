@@ -1,0 +1,71 @@
+.slider-sub {
+	font-size: 0.98rem;
+	color: #666;
+	margin-bottom: 1.1rem;
+	text-align: center;
+}
+.slider-title {
+	font-size: 1.25rem;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 1.2rem;
+	text-align: center;
+}
+button {
+	display: block;
+	margin: 1.2rem auto 0 auto;
+}
+.slider-container dx-slider, .slider-container .dx-slider {
+	width: 300px;
+	max-width: 100%;
+}
+
+@media (max-width: 500px) {
+	.slider-container dx-slider, .slider-container .dx-slider {
+		width: 100%;
+	}
+}
+/* Slider container styling */
+.slider-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+	padding: 2rem 2.5rem 2rem 2.5rem;
+	max-width: 420px;
+	margin: 2rem auto 1.5rem auto;
+	gap: 1.2rem;
+}
+
+.slider-container label {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #ff9800;
+	margin-bottom: 0.5rem;
+}
+
+.slider-value {
+	margin-top: 0.7rem;
+	font-size: 1.1rem;
+	font-weight: 500;
+	color: #333;
+}
+
+button {
+	background: orange;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 0.7rem 1.2rem;
+	font-size: 1.1rem;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: 1.2rem;
+	transition: background 0.2s;
+}
+button:hover {
+	background: #ff9800;
+}

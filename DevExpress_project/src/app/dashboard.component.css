@@ -1,0 +1,89 @@
+/* Dashboard layout styling */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff9800;
+  margin: 0;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 1.5rem;
+  margin: 2rem 0 2.5rem 0;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  flex: 1 1 200px;
+  background: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 180px;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.dashboard-main {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-chart {
+  flex: 2 1 400px;
+  min-width: 320px;
+  background: #fafbfc;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 1.2rem 1.5rem;
+}
+
+.dashboard-table {
+  flex: 1 1 300px;
+  min-width: 260px;
+  background: #fafbfc;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 1.2rem 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-main {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .dashboard-cards {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

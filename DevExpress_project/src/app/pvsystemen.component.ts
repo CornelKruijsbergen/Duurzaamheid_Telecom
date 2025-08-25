@@ -12,11 +12,22 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./pvsystemen.component.css']
 })
 export class PvsystemenComponent {
-  message: string | null = "Er is niks geupload";
-  PV: number = 0;
-  pvvermogen: number = 0;
-  pvhoek: number = 0;
-  pvaantal: number = 0;
+  heeftPV = true;
+  message: string | null = null;
+
+  gewicht: number = 0;
+  aantal: number = 1;
+  hoek: number = 0;
+  vermogen: string = '';
+  windrichting: string = '';
+
+  vermogens: string[] = [
+    '350WP', '355WP', '360WP', '365WP', '370WP', '375WP', '380WP', '385WP',
+    '395WP', '400WP', '405WP', '410WP', '415WP', '420WP', '425WP', '440WP'
+  ];
+  windrichtingen: string[] = [
+    'Oost', 'Zuid-Oost', 'Zuid', 'Zuid-West', 'West'
+  ];
 
   constructor(
     private http: HttpClient,
@@ -31,16 +42,17 @@ export class PvsystemenComponent {
 
   submitForm() {
     const data = {
-      PV: this.PV,
-      pvvermogen: this.pvvermogen,
-      pvhoek: this.pvhoek,
-      pvaantal: this.pvaantal
+      gewicht: this.gewicht,
+      aantal: this.aantal,
+      hoek: this.hoek,
+      vermogen: this.vermogen,
+      windrichting: this.windrichting,
+      heeftPV: this.heeftPV ? 1 : 0
     };
-    this.http.post('http://localhost:5000/set_pv', data)
+    this.http.post('http://localhost:5000/PV_Berekenen', data)
       .subscribe({
         next: (res: any) => {
           this.message = res.message;
-          // Navigeer naar de inbedrijf-component na succes
           this.router.navigate(['/inbedrijf'], { queryParams: { msg: this.message } });
         },
         error: () => this.message = 'Fout bij opslaan'

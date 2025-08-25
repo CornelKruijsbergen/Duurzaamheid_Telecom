@@ -1,1 +1,49 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+	<div class="dashboard-header">
+		<h2>Uitkomsten berekening</h2>
+			<dx-toolbar>
+				<dxi-item location="before" widget="dxButton" [options]="{ icon: 'home', text: 'Home', onClick: gaNaarHome }"></dxi-item>
+				<dxi-item location="before" widget="dxButton" [options]="{ icon: 'plus', text: 'Nieuw project', onClick: nieuwProject }"></dxi-item>
+				<dxi-item location="after" widget="dxButton" [options]="{ icon: 'export', text: 'Exporteer pdf', onClick: exportPdf }"></dxi-item>
+			</dx-toolbar>
+	</div>
+
+
+	   <div class="dashboard-cards">
+		   <div class="dashboard-card">
+					<div class="card-title">Totale uitstoot</div>
+					<div class="card-value">{{ resultaatGetal !== null ? (resultaatGetal | number:'1.2-2') + ' kg CO2' : '' }}</div>
+		   </div>
+		   <div class="dashboard-card">
+			   <div class="card-title">Uitstoot energie project in CO2 kg</div>
+			   <div class="card-value">{{ laatsteBerekening?.uitstoot_stroom }}</div>
+		   </div>
+		   <div class="dashboard-card">
+							<div class="card-title">Equivalent uitstoot per jaar energie huishouden</div>
+						<div class="card-value">{{ huisequivalentGetal !== null ? (huisequivalentGetal | number:'1.2-2') + ' huishoudens' : '' }}</div>
+		   </div>
+		   <div class="dashboard-card">
+			   <div class="card-title">Opwek PV per jaar</div>
+			   <div class="card-value">{{ laatsteBerekening?.OpwekPV }}</div>
+		   </div>
+	   </div>
+
+	<div class="dashboard-main">
+			<div class="dashboard-chart">
+						<dx-chart [dataSource]="chartData">
+							<dxi-series argumentField="jaar" valueField="co2_opwek" name="Energieopwek CO2" type="bar" color="#4caf50"></dxi-series>
+							<dxi-series argumentField="jaar" valueField="co2_uitstoot" name="Energieuitstoot CO2" type="bar" color="#f44336"></dxi-series>
+							<dxo-argument-axis [title]="'Jaren'" [discreteAxisDivisionMode]="'betweenLabels'"></dxo-argument-axis>
+							<dxi-value-axis [title]="'CO2 (kg)'" ></dxi-value-axis>
+						<dxo-legend [visible]="true"></dxo-legend>
+						</dx-chart>
+			</div>
+		<div class="dashboard-table">
+													 <dx-data-grid [dataSource]="tableData" [showBorders]="true">
+														 <dxi-column dataField="OnderdeelID" caption="Onderdeel"></dxi-column>
+														 <dxi-column dataField="Categorie" caption="Categorie"></dxi-column>
+														 <dxi-column dataField="kwantiteit" caption="Kwantiteit"></dxi-column>
+													 </dx-data-grid>
+		</div>
+	</div>
+</div>

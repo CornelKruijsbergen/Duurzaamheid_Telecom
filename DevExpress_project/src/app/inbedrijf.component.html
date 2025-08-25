@@ -1,3 +1,26 @@
-<p>inbedrijf works!</p>
-<button (click)="bereken()">Bereken</button>
+
+<div class="slider-container">
+		<div class="slider-title">Heeft het project een afwijkende In bedrijfstijd?</div>
+		<div class="slider-sub">Niet? Laat hem dan op 100 staan. Raadpleeg de handleiding</div>
+	<label for="slider">Kies een waarde (0-100):</label>
+	<dx-slider
+		id="slider"
+		[(value)]="sliderValue"
+		[min]="0"
+		[max]="100"
+		[step]="1"
+		[showRange]="true"
+		[tooltip]="{ enabled: true, format: format }"
+	></dx-slider>
+	<span class="slider-value">Waarde: {{ sliderValue }}</span>
+
+	<!-- Levensduur project veld direct onder de slider -->
+	<div class="project-lifetime-row">
+		<label for="levensduur">Levensduur project (jaren):</label>
+		<input type="number" id="levensduur" name="levensduur" min="1" [(ngModel)]="levensduurProject" required>
+	</div>
+</div>
+
+<button (click)="opslaanEnVerder()">Verder</button>
+
 <div *ngIf="result">{{ result }}</div>

@@ -85,8 +85,11 @@ export class NieuwBestandComponent {
     // Stuur de lijst direct als array naar de backend
     this.http.post('http://localhost:5000/verwerk_onderdelen_lijst', this.lijst).subscribe({
       next: (res: any) => {
-        this.feedback = 'Lijst succesvol verwerkt! Je wordt doorgestuurd...';
-        setTimeout(() => this.router.navigate(['/pvsystemen']), 1200);
+        // Sla de lijst ook op voor het dashboard
+        this.http.post('http://localhost:5000/opslaan_onderdelenlijst', this.lijst).subscribe(() => {
+          this.feedback = 'Lijst succesvol verwerkt! Je wordt doorgestuurd...';
+          setTimeout(() => this.router.navigate(['/pvsystemen']), 1200);
+        });
       },
       error: () => {
         this.feedback = 'Fout bij verwerken van de lijst.';

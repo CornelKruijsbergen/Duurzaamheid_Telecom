@@ -1,5 +1,4 @@
 
-
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -17,70 +16,20 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:TeamTelecom2025!@localhost:3306/onderdelendb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-@app.route('/')
-def home():
-    return "Debug Console, het werkt"
+# Sta CORS toe voor Angular frontend
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
 
-# Endpoint om data op te halen
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    return jsonify({print(data)})
+# Globale lijsten voor berekeningen
+berekeningen = []
+# CO2 berekeningen
+CO2_berekend = []
 
-# Endpoint om data te ontvangen
-@app.route('/api/send', methods=['POST'])
-def post_data():
-    received_data = request.json
-    print(f"Data ontvangen: {received_data}")
-    return jsonify({'status': 'success', 'received': received_data})
+# PV berekeningen
+PV_berekend = []
 
-
-
-    # ====================================File Upload========================================
-
-# Zet het pad naar de public map
-static_dir = os.path.join(os.path.dirname(__file__), 'public') 
-#app = Flask(__name__, static_folder=static_dir, static_url_path='')
-
-# Stel een map in waar bestanden lokaal worden opgeslagen
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'uploads')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Zorg ervoor dat de uploadmap bestaat
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    # Controleer of er een bestand is geüpload
-    if 'file' not in request.files:
-        return 'Geen bestand geselecteerd', 400
-
-    file = request.files['file']
-
-    # Controleer of het bestand een naam heeft
-    if file.filename == '':
-        return 'Bestand heeft geen naam', 400
-
-    # Controleer of het een CSV-bestand is
-    if not file.filename.endswith('.csv'):
-        return 'Alleen CSV-bestanden zijn toegestaan', 400
-
-    # Sla het bestand altijd op als 'catdatabase.csv'
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'catdatabase.csv')
-    file.save(filepath)
-
-    return f'Bestand opgeslagen als: {filepath}', 200
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_angular(path):
-    if path != "" and os.path.exists(os.path.join(static_dir, path)):
-        return send_from_directory(static_dir, path)
-    else:
-        # Fallback naar index.html voor Angular routing
-        return send_from_directory(static_dir, 'index.html')
 
 
 
@@ -132,7 +81,7 @@ def get_catdata():
 
 #=================================Input verwerken ==============================
 
-# onderdelenlijst (JSON)  verwerken
+
 @app.route('/verwerk_onderdelen_lijst', methods=['POST'])
 def verwerk_onderdelen_lijst():
     onderdelen_lijst = request.get_json()
@@ -267,54 +216,70 @@ def login():
         else:
             return jsonify({'success': False, 'message': 'Gebruiker niet gevonden'}), 401
 
-# #====================================PV-Berekening======================================== 
-berekeningen = []
 
-@app.route('/PV_Berekenen', methods=['POST'])
-def PV_Berekenen():
+#====================================Berekeningen CO2=========================================
+CO2_berekend = []
+
+@app.route('/bereken_formule', methods=['POST'])
+def bereken_formule():
     data = request.get_json()
-    print("DEBUG: Ontvangen data voor berekening:", data)
-    hoek = 90
-    vermogen_PV = 360
-    aantal_panelen = 10
-    gewicht_PV = 27
-    opwekfactor = 0.85
+    PV = data.get('piek_vermogen', 0)
+    NV = data.get('nominaal_vermogen', 0)
+    gewicht = data.get('gewicht', 0)
+    GW = data.get('GW', 0)
+    CP = data.get('capaciteit', 0)
+    LDO = data.get('levensduur', 0)
+    LDP = data.get('levensduur_project')
+    # Als niet meegegeven, pak de laatst opgeslagen waarde uit slider_waarde_opslaan
+    if LDP is None or LDP == 0:
+        if slider_waarde_opslaan:
+            laatste_slider = slider_waarde_opslaan[-1]
+            if isinstance(laatste_slider, dict) and 'levensduur_project' in laatste_slider:
+                LDP = laatste_slider['levensduur_project']
+            elif isinstance(laatste_slider, (int, float)):
+                # fallback: als alleen een getal is opgeslagen
+                LDP = laatste_slider
+        if LDP is None:
+            LDP = 0
 
-    USP_paneel = gewicht_PV * aantal_panelen * 0.396 * 0.369 + gewicht_PV * aantal_panelen * 0.302 * 3 + gewicht_PV * aantal_panelen * 0.302 * 4.9
+    PPL = 0.018
+    CKE = 4.18
 
-    opbrengstPV = vermogen_PV * aantal_panelen * opwekfactor * (hoek / 100)
-    kWh_per_jaar = (opbrengstPV * 880)/1000
-    Totaal_vermogen = aantal_panelen * vermogen_PV
+    if berekeningen:
+        laatste = berekeningen[-1]
+        opbrengstPV = laatste.get('opbrengstPV', 0)
+    else:
+        opbrengstPV = 0
+    OpwekPV = opbrengstPV * 880/1000
 
-    print(f"DEBUG: USP_paneel: {USP_paneel}")
-    print(f"DEBUG: Opbrengst PV: {opbrengstPV} kWh")
-    print(f"DEBUG: kWh per jaar: {kWh_per_jaar}")
-    print(f"DEBUG: Totaal vermogen: {Totaal_vermogen}")
+    USP = gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9
 
-    resultaat = {
-        'hoek': hoek,
-        'vermogen_PV': vermogen_PV,
-        'aantal_panelen': aantal_panelen,
-        'gewicht_PV': gewicht_PV,
-        'opbrengstPV': opbrengstPV,
-        'USP_paneel': USP_paneel,
-        'kWh_per_jaar': kWh_per_jaar,
-        'Totaal_vermogen': Totaal_vermogen
-    }
-    berekeningen.append(resultaat)
-    print(f"DEBUG: Berekening toegevoegd aan lijst. Totaal aantal berekeningen: {len(berekeningen)}")
+    if CP == 0 or LDO == 0:
+        return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
 
-    return jsonify(resultaat)
+    try:
+        uitkomst = (
+            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((USP / CP) * (LDP / LDO)) - ((opbrengstPV * 880)*CKE)
+        )
+        huisequivalent = uitkomst/8000
+        uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
+        OpwekPV = opbrengstPV * 880
 
-@app.route('/berekeningen', methods=['GET'])
-def get_berekeningen():
-    print(f"DEBUG: Ophalen van alle berekeningen. Aantal: {len(berekeningen)}")
-    return jsonify(berekeningen)
+        CO2_berekend.append({
+            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
+            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
+            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
+            'OpwekPV': f"{OpwekPV} kWh per jaar"
+        })
 
-@app.route('/reset_berekeningen', methods=['POST'])
-def reset_berekeningen():
-    print(f"DEBUG: Reset van alle berekeningen. Oude aantal: {len(berekeningen)}")
-    berekeningen.clear()
+        return jsonify({
+            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
+            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
+            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
+            'OpwekPV': f"{OpwekPV} kWh per jaar"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
     print("DEBUG: Alle berekeningen gewist.")
     return jsonify({'message': 'Alle berekeningen gewist!'})
 
@@ -400,30 +365,25 @@ def onderdelen_van_categorie():
     categorie = request.args.get('categorie')
     if not categorie:
         return jsonify({'error': 'Geen categorie opgegeven'}), 400
-    try:
-        onderdelen = Onderdeel.query.filter_by(Categorie=categorie).all()
-        result = [
-            {
-                'OnderdeelID': o.OnderdeelID,
-                'Nominaal_Vermogen': o.Nominaal_Vermogen,
-                'Piek_Vermogen': o.Piek_Vermogen,
-                'Gewicht': o.Gewicht,
-                'Levensduur': o.Levensduur,
-                'Capaciteit': o.Capaciteit,
-                'Categorie': o.Categorie
-            }
-            for o in onderdelen
-        ]
-        return jsonify({'onderdelen': result})
-    except Exception as e:
-        return jsonify({'onderdelen': [], 'error': str(e)}), 500
+    onderdelen = Onderdeel.query.filter_by(Categorie=categorie).all()
+    result = [
+        {
+            'OnderdeelID': o.OnderdeelID,
+            'Nominaal_Vermogen': o.Nominaal_Vermogen,
+            'Piek_Vermogen': o.Piek_Vermogen,
+            'Gewicht': o.Gewicht,
+            'Levensduur': o.Levensduur,
+            'Capaciteit': o.Capaciteit,
+            'Categorie': o.Categorie
+        }
+        for o in onderdelen
+    ]
+    return jsonify({'onderdelen': result})
 
+    #====================================PV_Berekenen=========================================
 
-#====================================Berekeningen CO2=========================================
-CO2_berekend = []
-
-@app.route('/bereken_formule', methods=['POST'])
-def bereken_formule():
+@app.route('/PV_Berekenen', methods=['POST'])
+def PV_Berekenen():
     data = request.get_json()
     PV = data.get('piek_vermogen', 0)
     NV = data.get('nominaal_vermogen', 0)
@@ -431,46 +391,75 @@ def bereken_formule():
     GW = data.get('GW', 0)
     CP = data.get('capaciteit', 0)
     LDO = data.get('levensduur', 0)
-    LDP = data.get('levensduur_project', 0)
+    LDP = data.get('levensduur_project')
+    # Als niet meegegeven, pak de laatst opgeslagen waarde uit slider_waarde_opslaan
+    if LDP is None or LDP == 0:
+        if 'slider_waarde_opslaan' in globals() and slider_waarde_opslaan:
+            laatste_slider = slider_waarde_opslaan[-1]
+            if isinstance(laatste_slider, dict) and 'levensduur_project' in laatste_slider:
+                LDP = laatste_slider['levensduur_project']
+            elif isinstance(laatste_slider, (int, float)):
+                LDP = laatste_slider
+        if LDP is None:
+            LDP = 0
+
     PPL = 0.018
     CKE = 4.18
 
-    if not berekeningen:
-        return jsonify({'error': 'Geen PV-berekening gevonden!'}), 400
-
-    laatste = berekeningen[-1]
-    opbrengstPV = laatste.get('opbrengstPV', 0)
-    OpwekPV = opbrengstPV * 880/1000
-
-    USP = gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9
-
-    if CP == 0 or LDO == 0:
-        return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
-
+    # Simpele berekening, pas aan naar wens
     try:
         uitkomst = (
-            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((USP / CP) * (LDP / LDO)) - ((opbrengstPV * 880)*CKE)
+            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9))
         )
-        huisequivalent = uitkomst/8000
-        uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
-        OpwekPV = opbrengstPV * 880
-
-        CO2_berekend.append({
-            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
-            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
-            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
-            'OpwekPV': f"{OpwekPV} kWh per jaar"
-        })
-
         return jsonify({
-            'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
-            'huisequivalent': f"{huisequivalent} huishoudens per jaar aan energie",
-            'uitstoot_stroom': f"{uitstoot_stroom} kg CO2 per jaar",
-            'OpwekPV': f"{OpwekPV} kWh per jaar"
+            'resultaat': f"{uitkomst} totaal CO2 uitstoot project"
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+# GET endpoint moet na de try/except komen, zodat POST altijd een return heeft
+@app.route('/bereken_formule', methods=['GET'])
+def get_bereken_formule():
+    if CO2_berekend:
+        return jsonify(CO2_berekend)
+    else:
+        return jsonify([])
+    
+
+#================================Inbedrijfslider=======================================
+
+slider_waarde_opslaan = []
+
+@app.route('/slider_waarde', methods=['POST'])
+def slider_waarde():
+    data = request.get_json()
+    waarde = data.get('waarde')
+    print(f"DEBUG: Ontvangen slider waarde: {waarde}")
+    slider_waarde_opslaan.append(waarde)
+    return jsonify({'success': True, 'waarde': waarde})
+
+
+    data = request.get_json()
+    levensduur_project = data.get('levensduur_project')
+    slider_waarde_opslaan.append({'waarde': waarde, 'levensduur_project': levensduur_project})
+
+    
+#==============================Dashboard=============================
+laatste_onderdelenlijst = []
+
+@app.route('/opslaan_onderdelenlijst', methods=['POST'])
+def opslaan_onderdelenlijst():
+    global laatste_onderdelenlijst
+    data = request.get_json()
+    if isinstance(data, list):
+        laatste_onderdelenlijst = data
+        print(f"DEBUG: Onderdelenlijst opgeslagen: {laatste_onderdelenlijst}")
+        return jsonify({'success': True})
+    return jsonify({'success': False, 'error': 'Geen lijst ontvangen'}), 400
+
+@app.route('/laatste_onderdelenlijst', methods=['GET'])
+def get_laatste_onderdelenlijst():
+    return jsonify({'onderdelenlijst': laatste_onderdelenlijst})
     
 
 #==================================Reset alles=========================================
