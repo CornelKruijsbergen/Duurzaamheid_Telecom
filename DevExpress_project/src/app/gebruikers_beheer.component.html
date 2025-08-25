@@ -1,1 +1,19 @@
-
+<link href="https://fonts.cdnfonts.com/css/tex-gyre-adventor" rel="stylesheet">
+<div class="gebruikers-topbar">
+  <a class="home-btn" routerLink="/">&lt; Home</a>
+</div>
+<main class="gebruikers-main">
+  <div class="gebruikers-card">
+    <h1 class="gebruikers-title">Wachtwoord wijzigen</h1>
+    <form class="gebruikers-form" (ngSubmit)="changePassword()">
+      <label for="username">Gebruikersnaam</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" required>
+      <label for="newPassword">Nieuw wachtwoord</label>
+      <input type="password" id="newPassword" [(ngModel)]="newPassword" name="newPassword" required>
+      <label for="confirmPassword">Bevestig nieuw wachtwoord</label>
+      <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+      <button type="submit">Wijzig wachtwoord</button>
+    </form>
+    <div *ngIf="message" class="gebruikers-message">{{ message }}</div>
+  </div>
+</main>

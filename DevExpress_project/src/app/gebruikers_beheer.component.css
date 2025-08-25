@@ -1,3 +1,127 @@
 
 
 
+@import url('https://fonts.cdnfonts.com/css/tex-gyre-adventor');
+
+.gebruikers-topbar {
+	width: 100vw;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 1.2rem 2.2rem 0.2rem 0;
+	box-sizing: border-box;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+
+.home-btn {
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	font-size: 1.1rem;
+	color: #ff6f00;
+	background: #fff7ed;
+	border: 1.5px solid #ff6f00;
+	border-radius: 2rem;
+	padding: 0.5rem 1.5rem;
+	text-decoration: none;
+	font-weight: 700;
+	box-shadow: 0 2px 8px #ffe0b2;
+	transition: background 0.2s, color 0.2s;
+}
+.home-btn:hover {
+	background: #ffe0b2;
+	color: #e65100;
+}
+
+.gebruikers-main {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, #fff7ed 0%, #ffe0b2 100%);
+}
+
+.gebruikers-card {
+	background: #fff;
+	border-radius: 1.5rem;
+	box-shadow: 0 4px 32px rgba(255,111,0,0.10);
+	padding: 2.5rem 2.5rem 2rem 2.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 340px;
+}
+
+.gebruikers-title {
+	color: #ff6f00;
+	font-size: 2.2rem;
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	font-weight: 700;
+	margin-bottom: 2rem;
+	letter-spacing: 0.03em;
+	text-align: center;
+	text-shadow: 0 2px 8px #fff3e0;
+}
+
+.gebruikers-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.2rem;
+	width: 100%;
+	max-width: 320px;
+}
+
+.gebruikers-form label {
+	font-family: 'TeXGyreAdventor', Arial, sans-serif;
+	font-size: 1.05rem;
+	color: #ff6f00;
+	margin-bottom: 0.2rem;
+	font-weight: 600;
+}
+
+.gebruikers-form input[type="text"],
+.gebruikers-form input[type="password"] {
+	padding: 0.6rem 1rem;
+	border-radius: 1.2rem;
+	border: 1.5px solid #ffcc80;
+	background: #fff7ed;
+	font-size: 1.1rem;
+	font-family: 'TeXGyreAdventor', Arial, sans-serif;
+	outline: none;
+	transition: border 0.2s;
+}
+.gebruikers-form input:focus {
+	border: 1.5px solid #ff6f00;
+}
+
+.gebruikers-form button[type="submit"] {
+	margin-top: 1.2rem;
+	background: #ff6f00;
+	color: #fff;
+	border: none;
+	border-radius: 2rem;
+	padding: 0.7rem 1.5rem;
+	font-size: 1.1rem;
+	font-family: 'TeXGyreAdventor-Bold', 'TeXGyreAdventor', Arial, sans-serif;
+	font-weight: 700;
+	box-shadow: 0 2px 8px #ffe0b2;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.gebruikers-form button[type="submit"]:hover {
+	background: #e65100;
+	color: #fff7ed;
+}
+
+.gebruikers-message {
+	margin-top: 1.5rem;
+	color: #388e3c;
+	font-size: 1.1rem;
+	font-family: 'TeXGyreAdventor', Arial, sans-serif;
+	text-align: center;
+}
+
+
+
