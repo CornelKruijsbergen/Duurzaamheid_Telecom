@@ -253,7 +253,12 @@ def bereken_formule():
 
     USP = gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9
 
+    print("DEBUG: Waarden in bereken_formule:")
+    print(f"PV={PV}, NV={NV}, gewicht={gewicht}, GW={GW}, CP={CP}, LDO={LDO}, LDP={LDP}")
+    print(f"opbrengstPV={opbrengstPV}, USP={USP}, OpwekPV={OpwekPV}")
+
     if CP == 0 or LDO == 0:
+        print('DEBUG: CP of LDO is 0, berekening afgebroken.')
         return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
 
     try:
@@ -263,6 +268,8 @@ def bereken_formule():
         huisequivalent = uitkomst/8000
         uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
         OpwekPV = opbrengstPV * 880
+
+        print(f"DEBUG: uitkomst={uitkomst}, huisequivalent={huisequivalent}, uitstoot_stroom={uitstoot_stroom}, OpwekPV={OpwekPV}")
 
         CO2_berekend.append({
             'resultaat': f"{uitkomst} totaal CO2 uitstoot project",
@@ -437,8 +444,9 @@ def slider_waarde():
     slider_waarde_opslaan.append(waarde)
     return jsonify({'success': True, 'waarde': waarde})
 
-
+def levensduur_project():
     data = request.get_json()
+    waarde = data.get('waarde')
     levensduur_project = data.get('levensduur_project')
     slider_waarde_opslaan.append({'waarde': waarde, 'levensduur_project': levensduur_project})
 

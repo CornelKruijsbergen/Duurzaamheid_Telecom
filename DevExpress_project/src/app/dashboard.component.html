@@ -15,8 +15,10 @@
 					<div class="card-value">{{ resultaatGetal !== null ? (resultaatGetal | number:'1.2-2') + ' kg CO2' : '' }}</div>
 		   </div>
 		   <div class="dashboard-card">
-			   <div class="card-title">Uitstoot energie project in CO2 kg</div>
-			   <div class="card-value">{{ laatsteBerekening?.uitstoot_stroom }}</div>
+									 <div class="card-title">Uitstoot energie project in CO2 kg</div>
+									 <div class="card-value">
+										 {{ uitstootStroomGetal !== null ? (uitstootStroomGetal | number:'1.2-2') + ' kg CO2 per jaar' : '' }}
+									 </div>
 		   </div>
 		   <div class="dashboard-card">
 							<div class="card-title">Equivalent uitstoot per jaar energie huishouden</div>

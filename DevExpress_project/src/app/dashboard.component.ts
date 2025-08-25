@@ -1,4 +1,5 @@
 
+
 import { Component, OnInit } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas'
@@ -17,6 +18,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 export class DashboardComponent implements OnInit {
   // Demo data voor cards
   laatsteBerekening: any = null;
+  // Getter voor uitstoot_stroom als getal
+  get uitstootStroomGetal(): number | null {
+    const val = this.laatsteBerekening?.uitstoot_stroom;
+    if (val === undefined || val === null) return null;
+    const num = typeof val === 'number' ? val : parseFloat(val.toString().replace(/[^\d.-]/g, ''));
+    return isNaN(num) ? null : num;
+  }
 
 
   chartData: any[] = [];

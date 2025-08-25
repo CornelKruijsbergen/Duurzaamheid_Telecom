@@ -46,6 +46,13 @@ export class InbedrijfComponent {
               totaalPiek += (item.Piek_Vermogen || 0) * kwantiteit;
               totaalNominaal += (item.Nominaal_Vermogen || 0) * kwantiteit;
             });
+            // Bepaal opbrengstPV als som van (optioneel) veld opbrengstPV per item, anders 0 HIER HEEEL GOED NOG NAAR KIJKEN!!!!!!!! ZEER INSTABIEL
+            let totaalOpbrengstPV = 0;
+            lijst.forEach(item => {
+              const kwantiteit = item.kwantiteit || 1;
+              // Gebruik veld opbrengstPV als aanwezig, anders 0
+              totaalOpbrengstPV += (item.opbrengstPV || 0) * kwantiteit;
+            });
             const formuleData = {
               piek_vermogen: totaalPiek,
               nominaal_vermogen: totaalNominaal,
@@ -53,7 +60,8 @@ export class InbedrijfComponent {
               GW: totaalGW,
               capaciteit: totaalCapaciteit,
               levensduur: totaalLevensduur,
-              levensduur_project: this.levensduurProject
+              levensduur_project: this.levensduurProject,
+              opbrengstPV: totaalOpbrengstPV
             };
             this.http.post('http://localhost:5000/bereken_formule', formuleData).subscribe({
               next: () => {
