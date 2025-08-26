@@ -15,7 +15,7 @@ export class PvsystemenComponent {
   heeftPV = true;
   message: string | null = null;
 
-  gewicht: number = 0;
+  gewichtPV: number = 0;
   aantal: number = 1;
   hoek: number = 0;
   vermogen: string = '';
@@ -42,7 +42,7 @@ export class PvsystemenComponent {
 
   submitForm() {
     const data = {
-      gewicht: this.gewicht,
+      gewichtPV: this.gewichtPV,
       aantal: this.aantal,
       hoek: this.hoek,
       vermogen: this.vermogen,

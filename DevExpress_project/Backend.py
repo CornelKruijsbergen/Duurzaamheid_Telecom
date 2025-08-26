@@ -26,8 +26,10 @@ berekeningen = []
 # CO2 berekeningen
 CO2_berekend = []
 
+
 # PV berekeningen
 PV_berekend = []
+laatste_uitkomstPV = None
 
 
 
@@ -221,6 +223,11 @@ CO2_berekend = []
 
 @app.route('/bereken_formule', methods=['POST'])
 def bereken_formule():
+    # Totaal aantal onderdelen uit de laatst opgeslagen onderdelenlijst
+    try:
+        totaal_aantal_onderdelen = sum(int(item.get('kwantiteit', 1)) for item in laatste_onderdelenlijst)
+    except Exception:
+        totaal_aantal_onderdelen = 0
     data = request.get_json()
     PV = data.get('piek_vermogen', 0)
     NV = data.get('nominaal_vermogen', 0)
@@ -256,18 +263,57 @@ def bereken_formule():
     print("DEBUG: Waarden in bereken_formule:")
     print(f"PV={PV}, NV={NV}, gewicht={gewicht}, GW={GW}, CP={CP}, LDO={LDO}, LDP={LDP}")
     print(f"opbrengstPV={opbrengstPV}, USP={USP}, OpwekPV={OpwekPV}")
+    print(f"DEBUG: Totaal aantal onderdelen in laatste_onderdelenlijst: {totaal_aantal_onderdelen}")
+
+    # Debug USP / CP
+    try:
+        usp_per_cp = USP / CP if CP != 0 else 'NA'
+    except Exception as e:
+        usp_per_cp = f'Error: {e}'
+    print(f"DEBUG: USP / CP = {usp_per_cp}")
+
+    # Debug LDP * totaal_aantal_onderdelen / LDO
+    try:
+        ldp_totaal_per_ldo = (LDO / (LDP * totaal_aantal_onderdelen)) if LDO != 0 else 'NA'
+    except Exception as e:
+        ldp_totaal_per_ldo = f'Error: {e}'
+    print(f"DEBUG: LDP * totaal_aantal_onderdelen / LDO = {ldp_totaal_per_ldo}")
 
     if CP == 0 or LDO == 0:
-        print('DEBUG: CP of LDO is 0, berekening afgebroken.')
-        return jsonify({'error': 'CP (capaciteit) en LDO (levensduur) mogen niet nul zijn.'}), 400
+        missing = []
+        if CP == 0:
+            missing.append('capaciteit (CP)')
+        if LDO == 0:
+            missing.append('levensduur (LDO)')
+        print(f'DEBUG: Ontbrekende of nul-waarden: {", ".join(missing)}')
+        return jsonify({'error': f'Verplichte velden ontbreken of zijn nul: {", ".join(missing)}'}), 400
 
     try:
+        # Robuuste checks
+        if LDP is None or LDP == 0:
+            return jsonify({'error': 'LDP (levensduur_project) is niet opgegeven of nul.'}), 400
+        if totaal_aantal_onderdelen is None or totaal_aantal_onderdelen == 0:
+            return jsonify({'error': 'totaal_aantal_onderdelen is niet opgegeven of nul.'}), 400
+        veilige_laatste_uitkomstPV = laatste_uitkomstPV if laatste_uitkomstPV is not None else 0
+        # voorkom delen door nul
+        try:
+            usp_per_cp = USP / CP if CP != 0 else 0
+        except Exception:
+            usp_per_cp = 0
+        try:
+            ldo_per_ldp = (LDO / (LDP * totaal_aantal_onderdelen)) if (LDP * totaal_aantal_onderdelen) != 0 else 0
+        except Exception:
+            ldo_per_ldp = 0
         uitkomst = (
-            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((USP / CP) * (LDP / LDO)) - ((opbrengstPV * 880)*CKE)
+            (PV * LDP * PPL * CKE)
+            + (NV * LDP * (1 - PPL) * CKE)
+            + (usp_per_cp * ldo_per_ldp)
+            + veilige_laatste_uitkomstPV
+            - ((opbrengstPV * 880 * LDP) * CKE)
         )
-        huisequivalent = uitkomst/8000
+        huisequivalent = uitkomst / 17000
         uitstoot_stroom = (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE)
-        OpwekPV = opbrengstPV * 880
+        OpwekPV = opbrengstPV * 880 / 1000
 
         print(f"DEBUG: uitkomst={uitkomst}, huisequivalent={huisequivalent}, uitstoot_stroom={uitstoot_stroom}, OpwekPV={OpwekPV}")
 
@@ -391,13 +437,41 @@ def onderdelen_van_categorie():
 @app.route('/PV_Berekenen', methods=['POST'])
 def PV_Berekenen():
     data = request.get_json()
+
+    heeftPV = data.get('heeftPV', 0)
+    print(f"DEBUG: heeftPV ontvangen in PV_Berekenen: {heeftPV}")
+    sliderValue = data.get('sliderValue', 100)
+    print(f"DEBUG: sliderValue ontvangen in PV_Berekenen: {sliderValue}")
+    # Haal benodigde variabelen op
+    try:
+        vermogen_paneel = float(data.get('vermogen', 0))
+    except Exception:
+        vermogen_paneel = 0
+    try:
+        hoek = float(data.get('hoek', 0))
+    except Exception:
+        hoek = 0
+    try:
+        aantal_panelen = int(data.get('aantal', 1))
+    except Exception:
+        aantal_panelen = 0
+
+    # Probeer WP uit string te halen als nodig
+    if isinstance(data.get('vermogen', 0), str):
+        import re
+        match = re.search(r'(\d+)', data.get('vermogen', ''))
+        if match:
+            vermogen_paneel = float(match.group(1))
+
+    # OpbrengstPV formule
+    OpbrengstPV = vermogen_paneel * 880 * 0.85 * (hoek/100) * aantal_panelen * heeftPV
     PV = data.get('piek_vermogen', 0)
     NV = data.get('nominaal_vermogen', 0)
-    gewicht = data.get('gewicht', 0)
-    GW = data.get('GW', 0)
-    CP = data.get('capaciteit', 0)
-    LDO = data.get('levensduur', 0)
-    LDP = data.get('levensduur_project')
+    gewichtPV = data.get('gewichtPV', 0)
+
+
+    # Haal LDP uit data, initialiseer als None
+    LDP = data.get('levensduur_project', None)
     # Als niet meegegeven, pak de laatst opgeslagen waarde uit slider_waarde_opslaan
     if LDP is None or LDP == 0:
         if 'slider_waarde_opslaan' in globals() and slider_waarde_opslaan:
@@ -409,16 +483,16 @@ def PV_Berekenen():
         if LDP is None:
             LDP = 0
 
-    PPL = 0.018
-    CKE = 4.18
 
-    # Simpele berekening, pas aan naar wens
+
     try:
-        uitkomst = (
-            (PV * LDP * PPL * CKE) + (NV * LDP * (1 - PPL) * CKE) + ((gewicht * 0.396 * 0.369 + GW * 0.302 * 3 + gewicht * 0.302 * 4.9))
+        uitkomstPV = (
+            ((gewichtPV * 0.396 * 0.369 + gewichtPV * 0.302 * 3 + gewichtPV * 0.302 * 4.9)) * aantal_panelen
         )
+        laatste_uitkomstPV = uitkomstPV
         return jsonify({
-            'resultaat': f"{uitkomst} totaal CO2 uitstoot project"
+            'uitkomstPV': uitkomstPV,
+            'OpbrengstPV': OpbrengstPV
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -460,7 +534,9 @@ def opslaan_onderdelenlijst():
     data = request.get_json()
     if isinstance(data, list):
         laatste_onderdelenlijst = data
-        print(f"DEBUG: Onderdelenlijst opgeslagen: {laatste_onderdelenlijst}")
+        print("DEBUG: Ontvangen onderdelenlijst via /opslaan_onderdelenlijst:")
+        for idx, onderdeel in enumerate(laatste_onderdelenlijst):
+            print(f"  {idx+1}: {onderdeel}")
         return jsonify({'success': True})
     return jsonify({'success': False, 'error': 'Geen lijst ontvangen'}), 400
 

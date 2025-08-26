@@ -53,13 +53,16 @@ export class InbedrijfComponent {
               // Gebruik veld opbrengstPV als aanwezig, anders 0
               totaalOpbrengstPV += (item.opbrengstPV || 0) * kwantiteit;
             });
+            // Zorg dat capaciteit en levensduur minimaal 1 zijn
+            const veiligeCapaciteit = totaalCapaciteit > 0 ? totaalCapaciteit : 1;
+            const veiligeLevensduur = totaalLevensduur > 0 ? totaalLevensduur : 1;
             const formuleData = {
               piek_vermogen: totaalPiek,
               nominaal_vermogen: totaalNominaal,
               gewicht: totaalGewicht,
               GW: totaalGW,
-              capaciteit: totaalCapaciteit,
-              levensduur: totaalLevensduur,
+              capaciteit: veiligeCapaciteit,
+              levensduur: veiligeLevensduur,
               levensduur_project: this.levensduurProject,
               opbrengstPV: totaalOpbrengstPV
             };

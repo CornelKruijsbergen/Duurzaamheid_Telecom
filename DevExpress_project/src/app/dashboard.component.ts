@@ -16,6 +16,24 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  // Levensduur project (LDP) en PV aanwezig
+  get levensduurProject(): number | null {
+    // Probeer levensduur project uit laatsteBerekening te halen
+    if (this.laatsteBerekening?.levensduur_project) {
+      return this.laatsteBerekening.levensduur_project;
+    }
+    // Fallback: probeer uit resultaat-string
+    if (this.laatsteBerekening?.resultaat) {
+      return this.extractLDP(this.laatsteBerekening.resultaat);
+    }
+    return null;
+  }
+
+  get pvPanelenAanwezig(): number {
+    // 1 als opbrengstPV of OpwekPV > 0, anders 0
+    const pv = parseFloat((this.laatsteBerekening?.OpwekPV || '0').toString().replace(/[^\d.-]/g, ''));
+    return pv > 0 ? 1 : 0;
+  }
   // Demo data voor cards
   laatsteBerekening: any = null;
   // Getter voor uitstoot_stroom als getal

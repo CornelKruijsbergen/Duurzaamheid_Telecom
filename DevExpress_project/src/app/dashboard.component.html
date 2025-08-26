@@ -9,26 +9,35 @@
 	</div>
 
 
-	   <div class="dashboard-cards">
-		   <div class="dashboard-card">
+
+		 <div class="dashboard-cards">
+				<div class="dashboard-card">
 					<div class="card-title">Totale uitstoot</div>
 					<div class="card-value">{{ resultaatGetal !== null ? (resultaatGetal | number:'1.2-2') + ' kg CO2' : '' }}</div>
-		   </div>
-		   <div class="dashboard-card">
-									 <div class="card-title">Uitstoot energie project in CO2 kg</div>
-									 <div class="card-value">
-										 {{ uitstootStroomGetal !== null ? (uitstootStroomGetal | number:'1.2-2') + ' kg CO2 per jaar' : '' }}
-									 </div>
-		   </div>
-		   <div class="dashboard-card">
-							<div class="card-title">Equivalent uitstoot per jaar energie huishouden</div>
-						<div class="card-value">{{ huisequivalentGetal !== null ? (huisequivalentGetal | number:'1.2-2') + ' huishoudens' : '' }}</div>
-		   </div>
-		   <div class="dashboard-card">
-			   <div class="card-title">Opwek PV per jaar</div>
-			   <div class="card-value">{{ laatsteBerekening?.OpwekPV }}</div>
-		   </div>
-	   </div>
+				</div>
+				<div class="dashboard-card">
+					<div class="card-title">Uitstoot energie project in CO2 kg</div>
+					<div class="card-value">
+						{{ uitstootStroomGetal !== null ? (uitstootStroomGetal | number:'1.2-2') + ' kg CO2 per jaar' : '' }}
+					</div>
+				</div>
+				<div class="dashboard-card">
+					<div class="card-title">Equivalent uitstoot per jaar energie huishouden</div>
+					<div class="card-value">{{ huisequivalentGetal !== null ? (huisequivalentGetal | number:'1.2-2') + ' huishoudens' : '' }}</div>
+				</div>
+				<div class="dashboard-card">
+					<div class="card-title">Opwek PV per jaar</div>
+					<div class="card-value">{{ laatsteBerekening?.OpwekPV }}</div>
+				</div>
+				<div class="dashboard-card">
+					<div class="card-title">Levensduur project</div>
+					<div class="card-value">{{ levensduurProject !== null ? levensduurProject + ' jaar' : '' }}</div>
+				</div>
+				<div class="dashboard-card">
+				<div class="card-title">PV-panelen aanwezig</div>
+				<div class="card-value">{{ pvPanelenAanwezig === 1 ? 'Aanwezig' : 'Niet aanwezig' }}</div>
+				</div>
+			</div>
 
 	<div class="dashboard-main">
 			<div class="dashboard-chart">
